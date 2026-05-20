@@ -26,7 +26,9 @@ public class PortfolioDAO {
 
     public List<PortfolioModel> selectListPortfolio() {
         List<PortfolioModel> list = new ArrayList<>();
-        String sql = "SELECT portfolio_id, title, category, summary, created_at FROM portfolio ORDER BY portfolio_id DESC";
+        String sql = "SELECT p.portfolio_id, p.title, p.category, p.summary, p.created_at, " +
+                     "(SELECT image_path FROM portfolio_image WHERE portfolio_id = p.portfolio_id ORDER BY sort_order LIMIT 1) AS first_image " +
+                     "FROM portfolio p ORDER BY p.portfolio_id DESC";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -37,6 +39,14 @@ public class PortfolioDAO {
                 m.setCategory(rs.getString("category"));
                 m.setSummary(rs.getString("summary"));
                 m.setCreatedAt(rs.getString("created_at"));
+                String firstImage = rs.getString("first_image");
+                if (firstImage != null) {
+                    PortfolioImageModel img = new PortfolioImageModel();
+                    img.setImagePath(firstImage);
+                    List<PortfolioImageModel> imgs = new ArrayList<>();
+                    imgs.add(img);
+                    m.setImages(imgs);
+                }
                 list.add(m);
             }
         } catch (Exception e) { e.printStackTrace(); }
