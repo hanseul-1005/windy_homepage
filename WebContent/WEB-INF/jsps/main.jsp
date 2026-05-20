@@ -34,6 +34,11 @@ List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute
 	
 	 <!-- Main CSS File -->
 	 <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
+	 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+	 <style>
+	   .faq-content .ql-container.ql-snow { border: none; }
+	   .faq-content .ql-editor { padding: 0; }
+	 </style>
 <script type="text/javascript">
 
 function goDetail(num) {
@@ -263,7 +268,9 @@ function goDetail(num) {
               <div class="faq-item <%=i == 0 ? "faq-active" : ""%>">
                 <h3><span class="num"><%=i+1%>.</span> <span><%=n.getTitle()%></span></h3>
                 <div class="faq-content">
-                  <p><%=n.getContent() != null ? n.getContent().replaceAll("<[^>]*>", "") : ""%></p>
+                  <div class="ql-container ql-snow">
+                    <div class="ql-editor"><%=n.getContent() != null ? n.getContent() : ""%></div>
+                  </div>
                 </div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
               </div>
