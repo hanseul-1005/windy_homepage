@@ -104,9 +104,9 @@ function goDetail(num) {
           <%
           if (listPortfolio != null) {
               for (PortfolioModel p : listPortfolio) {
-                  String thumbSrc = "img/no_image.png";
+                  String thumbSrc = request.getContextPath() + "/img/no_image.png";
                   if (p.getImages() != null && !p.getImages().isEmpty()) {
-                      thumbSrc = p.getImages().get(0).getImagePath();
+                      thumbSrc = request.getContextPath() + "/" + p.getImages().get(0).getImagePath();
                   }
                   String cat = p.getCategory() != null ? p.getCategory() : "AI";
                   String filterClass = "filter-app";
