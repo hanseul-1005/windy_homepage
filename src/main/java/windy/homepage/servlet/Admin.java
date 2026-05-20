@@ -24,12 +24,14 @@ import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
 import windy.homepage.dao.NoticeDAO;
 import windy.homepage.dao.PortfolioDAO;
+import windy.homepage.dao.PressDAO;
 import windy.homepage.dao.ProductDAO;
 import windy.homepage.model.CertificationModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.HistoryModel;
 import windy.homepage.model.NoticeModel;
 import windy.homepage.model.PortfolioModel;
+import windy.homepage.model.PressModel;
 import windy.homepage.model.ProductModel;
 
 @WebServlet(name = "admin", urlPatterns = { "/admin.windy" })
@@ -55,6 +57,7 @@ public class Admin extends HttpServlet {
         CertificationDAO   certDAO       = new CertificationDAO();
         PortfolioDAO       portfolioDAO  = new PortfolioDAO();
         ProductDAO         productDAO    = new ProductDAO();
+        PressDAO           pressDAO      = new PressDAO();
 
         if ("main".equals(menu)) {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/dash_board.jsp");
@@ -153,6 +156,21 @@ public class Admin extends HttpServlet {
             request.setAttribute("product", productDAO.selectProduct(productId));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/product/product_modify.jsp");
             dispatcher.forward(request, response);
+
+        } else if ("press_list".equals(menu)) {
+            request.setAttribute("listPress", pressDAO.selectListPress());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/press/press_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("press_add".equals(menu)) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/press/press_add.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("press_modify".equals(menu)) {
+            int pressId = Integer.parseInt(request.getParameter("pressId"));
+            request.setAttribute("press", pressDAO.selectPress(pressId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/press/press_modify.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
@@ -178,6 +196,7 @@ public class Admin extends HttpServlet {
         CertificationDAO certDAO      = new CertificationDAO();
         PortfolioDAO     portfolioDAO = new PortfolioDAO();
         ProductDAO       productDAO   = new ProductDAO();
+        PressDAO         pressDAO     = new PressDAO();
         JSONObject       objResult    = new JSONObject();
 
         if ("notice_add".equals(mode)) {
@@ -445,6 +464,51 @@ public class Admin extends HttpServlet {
             int productId = Integer.parseInt(request.getParameter("productId"));
             int result    = productDAO.deleteProduct(productId);
             objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("press_add".equals(mode)) {
+            String title     = request.getParameter("title");
+            String sourceUrl = request.getParameter("sourceUrl");
+            String content   = request.getParameter("content");
+            Part   thumbPart = request.getPart("thumbnail");
+
+            PressModel model = new PressModel();
+            model.setTitle(title);
+            model.setContent(content != null ? content : "");
+            model.setSourceUrl(sourceUrl != null ? sourceUrl : "");
+
+            if (thumbPart != null && thumbPart.getSize() > 0) {
+                String fileName = savePressImage(thumbPart, request);
+                if (fileName != null) model.setThumbnailPath("uploads/press/" + fileName);
+            }
+
+            int result = pressDAO.insertPress(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("press_update".equals(mode)) {
+            int    pressId   = Integer.parseInt(request.getParameter("pressId"));
+            String title     = request.getParameter("title");
+            String sourceUrl = request.getParameter("sourceUrl");
+            String content   = request.getParameter("content");
+            Part   thumbPart = request.getPart("thumbnail");
+
+            PressModel model = new PressModel();
+            model.setPressId(pressId);
+            model.setTitle(title);
+            model.setContent(content != null ? content : "");
+            model.setSourceUrl(sourceUrl != null ? sourceUrl : "");
+
+            pressDAO.updatePress(model);
+
+            if (thumbPart != null && thumbPart.getSize() > 0) {
+                String fileName = savePressImage(thumbPart, request);
+                if (fileName != null) pressDAO.updatePressThumbnail(pressId, "uploads/press/" + fileName);
+            }
+            objResult.put("result", "true");
+
+        } else if ("press_delete".equals(mode)) {
+            int pressId = Integer.parseInt(request.getParameter("pressId"));
+            int result  = pressDAO.deletePress(pressId);
+            objResult.put("result", result > 0 ? "true" : "false");
         }
 
         PrintWriter out = response.getWriter();
@@ -480,6 +544,26 @@ public class Admin extends HttpServlet {
             String fileName = UUID.randomUUID().toString() + ext;
 
             String uploadDir = getServletContext().getRealPath("/uploads/portfolio/");
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
+
+            filePart.write(uploadDir + File.separator + fileName);
+            return fileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private String savePressImage(Part filePart, HttpServletRequest request) {
+        try {
+            String originalName = filePart.getSubmittedFileName();
+            if (originalName == null || originalName.isEmpty()) return null;
+
+            String ext      = originalName.substring(originalName.lastIndexOf('.'));
+            String fileName = UUID.randomUUID().toString() + ext;
+
+            String uploadDir = getServletContext().getRealPath("/uploads/press/");
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 

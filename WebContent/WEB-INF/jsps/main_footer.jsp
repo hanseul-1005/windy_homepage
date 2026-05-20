@@ -9,8 +9,8 @@
           <i class="bi bi-geo-alt icon"></i>
           <div class="address">
             <h4>주소</h4>
-            <p>광주광역시 광산구 하남산단 3번로 138</p>
-            <p>B동 신관 207호</p>
+            <p>광주광역시 북구 첨단과기로208번길 17-11,</p>
+            <p>206호</p>
             <p></p>
           </div>
 
@@ -21,8 +21,8 @@
           <div>
             <h4>Contact</h4>
             <p>
-              <strong>연락처:</strong> <span>062-956-0136</span><br>
-              <strong>이메일:</strong> <span>shargon36@gmail.com</span><br>
+              <strong>연락처:</strong> <span>010-9924-0136</span><br>
+              <strong>이메일:</strong> <span>sybaek@windy.ai.kr</span><br>
             </p>
           </div>
         </div>

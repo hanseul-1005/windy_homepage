@@ -44,6 +44,13 @@ String menu = (String) request.getParameter("menu");
       </li>
 
       <li class="nav-item">
+        <a class="nav-link <%if(!"press_list".equals(menu) && !"press_add".equals(menu) && !"press_modify".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=press_list">
+          <i class="bi bi-newspaper"></i>
+          <span>언론보도 관리</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link <%if(!"notice_list".equals(menu) && !"notice_add".equals(menu) && !"notice_modify".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=notice_list">
           <i class="bi bi-layout-text-window-reverse"></i>
           <span>공지사항 관리</span>

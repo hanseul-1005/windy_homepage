@@ -120,6 +120,18 @@ CREATE TABLE product_image (
     FOREIGN KEY (product_id) REFERENCES product(product_id) ON DELETE CASCADE
 );
 
+-- 언론보도
+CREATE TABLE press (
+    press_id        INT             NOT NULL AUTO_INCREMENT,
+    title           VARCHAR(200)    NOT NULL,
+    content         LONGTEXT,
+    thumbnail_path  VARCHAR(500),
+    source_url      VARCHAR(1000),
+    created_at      DATETIME        NOT NULL DEFAULT NOW(),
+    updated_at      DATETIME        NOT NULL DEFAULT NOW() ON UPDATE NOW(),
+    PRIMARY KEY (press_id)
+);
+
 -- 에디터 업로드 이미지
 CREATE TABLE editor_image (
     image_id    INT             NOT NULL AUTO_INCREMENT,

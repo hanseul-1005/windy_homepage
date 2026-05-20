@@ -18,6 +18,7 @@ import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
 import windy.homepage.dao.NoticeDAO;
 import windy.homepage.dao.PortfolioDAO;
+import windy.homepage.dao.PressDAO;
 import windy.homepage.dao.ProductDAO;
 import windy.homepage.model.ProductModel;
 import windy.homepage.model.ContactModel;
@@ -35,12 +36,13 @@ public class Main extends HttpServlet {
         String menu = request.getParameter("menu");
         if (menu == null) menu = "home";
 
-        NoticeDAO        noticeDAO  = new NoticeDAO();
-        ContactDAO       contactDAO = new ContactDAO();
-        HistoryDAO       historyDAO = new HistoryDAO();
-        CertificationDAO certDAO    = new CertificationDAO();
+        NoticeDAO        noticeDAO    = new NoticeDAO();
+        ContactDAO       contactDAO   = new ContactDAO();
+        HistoryDAO       historyDAO   = new HistoryDAO();
+        CertificationDAO certDAO      = new CertificationDAO();
         PortfolioDAO     portfolioDAO = new PortfolioDAO();
         ProductDAO       productDAO   = new ProductDAO();
+        PressDAO         pressDAO     = new PressDAO();
 
         if ("home".equals(menu)) {
             List<PortfolioModel> listPortfolio = portfolioDAO.selectListPortfolio();
@@ -84,6 +86,17 @@ public class Main extends HttpServlet {
             int productId = Integer.parseInt(request.getParameter("productId"));
             request.setAttribute("product", productDAO.selectProduct(productId));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/product_detail.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("press_list".equals(menu)) {
+            request.setAttribute("listPress", pressDAO.selectListPress());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/press_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("press_detail".equals(menu)) {
+            int pressId = Integer.parseInt(request.getParameter("pressId"));
+            request.setAttribute("press", pressDAO.selectPress(pressId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/press_detail.jsp");
             dispatcher.forward(request, response);
         }
     }

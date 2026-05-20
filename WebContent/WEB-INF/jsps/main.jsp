@@ -307,7 +307,7 @@ function goDetail(num) {
                 <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
                   <i class="bi bi-geo-alt"></i>
                   <h3>주소</h3>
-                  <p>광주광역시 광산구 하남산단 3번로 138, B동 신관 207호</p>
+                  <p>광주광역시 북구 첨단과기로208번길 17-11, 206호</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -315,7 +315,7 @@ function goDetail(num) {
                 <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
                   <i class="bi bi-telephone"></i>
                   <h3>연락처</h3>
-                  <p>062-956-0136</p>
+                  <p>010-9924-0136</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -323,7 +323,7 @@ function goDetail(num) {
                 <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="400">
                   <i class="bi bi-envelope"></i>
                   <h3>이메일</h3>
-                  <p>windy.bsy@gmail.com</p>
+                  <p>sybaek@windy.ai.kr</p>
                 </div>
               </div><!-- End Info Item -->
 
