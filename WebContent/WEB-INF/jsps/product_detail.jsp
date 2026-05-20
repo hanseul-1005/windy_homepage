@@ -32,6 +32,11 @@ ProductModel product = (ProductModel) request.getAttribute("product");
     .product-info-box ul { padding-left: 0; list-style: none; }
     .product-info-box ul li { padding: 6px 0; border-bottom: 1px solid #e9ecef; }
     .product-info-box ul li i { color: #0d6efd; margin-right: 8px; }
+    .portfolio-details-slider .swiper-slide img {
+      max-height: 400px;
+      width: 100%;
+      object-fit: contain;
+    }
   </style>
 </head>
 <body class="portfolio-details-page">
