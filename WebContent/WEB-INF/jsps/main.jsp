@@ -358,7 +358,7 @@ function goDetail(num) {
                 </div>
 
                 <div class="col-md-12 text-center">
-                  <button type="button" onclick="goContact()">보내기</button>
+                  <button type="button" class="btn-getstarted" onclick="goContact()">보내기</button>
                 </div>
 
               </div>
