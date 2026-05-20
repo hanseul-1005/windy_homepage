@@ -52,6 +52,8 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
     .img-preview img { width: 120px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6; }
     .img-preview .btn-remove { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px;
       border-radius: 50%; font-size: 11px; padding: 0; line-height: 20px; text-align: center; }
+    .badge-thumb { position: absolute; bottom: 4px; left: 4px; background: #0d6efd; color: #fff;
+      font-size: 10px; padding: 1px 5px; border-radius: 3px; pointer-events: none; }
   </style>
 </head>
 <body>
@@ -195,6 +197,14 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
 
   var selectedFiles = [];
 
+  function updateThumbBadge() {
+    $('.badge-thumb').remove();
+    var first = $('#existingImages .img-preview:first, #previewArea .img-preview:first').first();
+    if (first.length) first.append('<span class="badge-thumb">대표</span>');
+  }
+
+  $(document).ready(function() { updateThumbBadge(); });
+
   $('#imageInput').on('change', function() {
     var files = Array.from(this.files);
     files.forEach(function(file) {
@@ -206,6 +216,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
         div.append('<img src="' + e.target.result + '">');
         div.append('<button type="button" class="btn btn-danger btn-remove" onclick="removeNewImage(' + idx + ')">×</button>');
         $('#previewArea').append(div);
+        updateThumbBadge();
       };
       reader.readAsDataURL(file);
     });
@@ -215,6 +226,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
   function removeNewImage(idx) {
     selectedFiles[idx] = null;
     $('[data-idx="' + idx + '"]').remove();
+    updateThumbBadge();
   }
 
   function deleteImage(imageId) {
@@ -227,6 +239,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
       success: function(ret) {
         if (ret.result === "true") {
           $('#img_' + imageId).remove();
+          updateThumbBadge();
         } else {
           alert("삭제에 실패했습니다.");
         }
