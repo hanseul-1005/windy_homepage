@@ -19,6 +19,7 @@ import windy.homepage.dao.HistoryDAO;
 import windy.homepage.dao.NoticeDAO;
 import windy.homepage.dao.PortfolioDAO;
 import windy.homepage.dao.ProductDAO;
+import windy.homepage.model.ProductModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.NoticeModel;
 import windy.homepage.model.PortfolioModel;
@@ -77,6 +78,12 @@ public class Main extends HttpServlet {
             int portfolioId = Integer.parseInt(request.getParameter("portfolioId"));
             request.setAttribute("portfolio", portfolioDAO.selectPortfolio(portfolioId));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/portfolio_detail.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("product_detail".equals(menu)) {
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            request.setAttribute("product", productDAO.selectProduct(productId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/product_detail.jsp");
             dispatcher.forward(request, response);
         }
     }

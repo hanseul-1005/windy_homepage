@@ -27,7 +27,9 @@ public class ProductDAO {
 
     public List<ProductModel> selectListProduct() {
         List<ProductModel> list = new ArrayList<>();
-        String sql = "SELECT product_id, title, created_at FROM product ORDER BY product_id DESC";
+        String sql = "SELECT p.product_id, p.title, p.summary, p.created_at, " +
+                     "(SELECT image_path FROM product_image WHERE product_id = p.product_id ORDER BY sort_order LIMIT 1) AS first_image " +
+                     "FROM product p ORDER BY p.product_id DESC";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -35,7 +37,16 @@ public class ProductDAO {
                 ProductModel m = new ProductModel();
                 m.setProductId(rs.getInt("product_id"));
                 m.setTitle(rs.getString("title"));
+                m.setSummary(rs.getString("summary"));
                 m.setCreatedAt(rs.getString("created_at"));
+                String firstImage = rs.getString("first_image");
+                if (firstImage != null) {
+                    ProductImageModel img = new ProductImageModel();
+                    img.setImagePath(firstImage);
+                    List<ProductImageModel> imgs = new ArrayList<>();
+                    imgs.add(img);
+                    m.setImages(imgs);
+                }
                 list.add(m);
             }
         } catch (Exception e) { e.printStackTrace(); }
