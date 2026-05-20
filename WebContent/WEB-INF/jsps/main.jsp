@@ -38,6 +38,19 @@ List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute
 	 <style>
 	   .faq-content .ql-container.ql-snow { border: none; }
 	   .faq-content .ql-editor { padding: 0; }
+	   .btn-getstarted {
+	     color: var(--contrast-color);
+	     background: var(--heading-color);
+	     font-size: 14px;
+	     padding: 8px 25px;
+	     border-radius: 50px;
+	     border: none;
+	     cursor: pointer;
+	     transition: 0.3s;
+	   }
+	   .btn-getstarted:hover {
+	     background: color-mix(in srgb, var(--accent-color), transparent 15%);
+	   }
 	 </style>
 <script type="text/javascript">
 
