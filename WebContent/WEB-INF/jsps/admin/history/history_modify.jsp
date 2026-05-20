@@ -1,7 +1,7 @@
-<%@page import="windy.homepage.model.ContactModel"%>
+<%@page import="windy.homepage.model.HistoryModel"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-ContactModel contact = (ContactModel) request.getAttribute("contact");
+HistoryModel history = (HistoryModel) request.getAttribute("history");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -23,11 +23,11 @@ ContactModel contact = (ContactModel) request.getAttribute("contact");
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1>Contact Us 상세</h1>
+      <h1>연혁 수정</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="admin.windy?menu=contact_list">Contact 목록</a></li>
-          <li class="breadcrumb-item active">상세 조회</li>
+          <li class="breadcrumb-item"><a href="admin.windy?menu=history_list">연혁 목록</a></li>
+          <li class="breadcrumb-item active">연혁 수정</li>
         </ol>
       </nav>
     </div>
@@ -37,41 +37,32 @@ ContactModel contact = (ContactModel) request.getAttribute("contact");
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">Contact Us 상세</h5>
+              <h5 class="card-title">연혁 수정</h5>
               <div style="text-align: right; margin-bottom: 10px;">
-                <button type="button" class="btn btn-outline-secondary"
-                        onclick="location.href='admin.windy?menu=contact_list'">목록</button>
-                <button type="button" class="btn btn-outline-danger ms-2"
-                        onclick="goDelete(<%=contact.getContactId()%>)">삭제</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="location.href='admin.windy?menu=history_list'">목록</button>
+                <button type="button" class="btn btn-primary ms-2" onclick="goUpdate()">수정</button>
               </div>
+              <input type="hidden" id="historyId" value="<%=history.getHistoryId()%>">
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label fw-bold">제목</label>
-                <div class="col-sm-10 d-flex align-items-center">
-                  <span><%=contact.getSubject()%></span>
+                <label class="col-sm-2 col-form-label">연도</label>
+                <div class="col-sm-3">
+                  <input type="number" id="historyYear" class="form-control" value="<%=history.getHistoryYear()%>">
                 </div>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label fw-bold">작성자</label>
-                <div class="col-sm-10 d-flex align-items-center">
-                  <span><%=contact.getName()%></span>
+                <label class="col-sm-2 col-form-label">월</label>
+                <div class="col-sm-2">
+                  <select id="historyMonth" class="form-select">
+                    <%for (int m = 1; m <= 12; m++) {%>
+                    <option value="<%=m%>" <%=history.getHistoryMonth() == m ? "selected" : ""%>><%=m%>월</option>
+                    <%}%>
+                  </select>
                 </div>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label fw-bold">이메일</label>
-                <div class="col-sm-10 d-flex align-items-center">
-                  <span><%=contact.getEmail()%></span>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label fw-bold">작성일</label>
-                <div class="col-sm-10 d-flex align-items-center">
-                  <span><%=contact.getCreatedAt()%></span>
-                </div>
-              </div>
-              <div class="row mb-3">
-                <label class="col-sm-2 col-form-label fw-bold">내용</label>
+                <label class="col-sm-2 col-form-label">내용</label>
                 <div class="col-sm-10">
-                  <div style="min-height: 150px; white-space: pre-wrap;"><%=contact.getContent()%></div>
+                  <input type="text" id="content" class="form-control" value="<%=history.getContent()%>">
                 </div>
               </div>
             </div>
@@ -85,22 +76,29 @@ ContactModel contact = (ContactModel) request.getAttribute("contact");
     <div class="copyright">&copy; Copyright <strong><span>Windy</span></strong>. All Rights Reserved</div>
   </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
   <script src="bootstrap_nice/assets/js/main.js"></script>
   <script>
-  function goDelete(contactId) {
-    if (!confirm("삭제하시겠습니까?")) return;
+  function goUpdate() {
+    var historyId    = $('#historyId').val();
+    var historyYear  = $('#historyYear').val().trim();
+    var historyMonth = $('#historyMonth').val();
+    var content      = $('#content').val().trim();
+
+    if (!historyYear)  { alert("연도를 입력해주세요."); return; }
+    if (!historyMonth) { alert("월을 선택해주세요."); return; }
+    if (!content)      { alert("내용을 입력해주세요."); return; }
+
     $.ajax({
       type: "POST",
-      url: "admin.windy?mode=contact_delete",
-      data: { contactId: contactId },
+      url: "admin.windy?mode=history_update",
+      data: { historyId: historyId, historyYear: historyYear, historyMonth: historyMonth, content: content },
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {
-          alert("삭제되었습니다.");
-          location.href = "admin.windy?menu=contact_list";
+          alert("수정되었습니다.");
+          location.href = "admin.windy?menu=history_list";
         } else {
-          alert("삭제에 실패했습니다.");
+          alert("수정에 실패했습니다.");
         }
       },
       error: function() { alert("오류가 발생했습니다."); }

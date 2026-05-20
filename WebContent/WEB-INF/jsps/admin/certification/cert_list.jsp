@@ -1,8 +1,8 @@
-<%@page import="windy.homepage.model.NoticeModel"%>
+<%@page import="windy.homepage.model.CertificationModel"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-List<NoticeModel> listNotice = (List<NoticeModel>) request.getAttribute("listNotice");
+List<CertificationModel> listCert = (List<CertificationModel>) request.getAttribute("listCert");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,7 +28,7 @@ List<NoticeModel> listNotice = (List<NoticeModel>) request.getAttribute("listNot
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1>공지사항 관리</h1>
+      <h1>인증서/문서 관리</h1>
     </div>
 
     <section class="section">
@@ -36,44 +36,45 @@ List<NoticeModel> listNotice = (List<NoticeModel>) request.getAttribute("listNot
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">공지사항 목록</h5>
+              <h5 class="card-title">인증서/문서 목록</h5>
               <div style="text-align: right; margin-bottom: 10px;">
-                <button type="button" class="btn btn-outline-primary" onclick="location.href='admin.windy?menu=notice_add'">등록</button>
+                <button type="button" class="btn btn-outline-primary"
+                        onclick="location.href='admin.windy?menu=cert_add'">등록</button>
               </div>
               <table class="table datatable">
                 <colgroup>
                   <col width="8%"/>
-                  <col width="50%"/>
-                  <col width="18%"/>
-                  <col width="18%"/>
-                  <col width="6%"/>
+                  <col width="45%"/>
+                  <col width="12%"/>
+                  <col width="20%"/>
+                  <col width="15%"/>
                 </colgroup>
                 <thead>
                   <tr>
                     <th>No</th>
                     <th>제목</th>
-                    <th>작성일</th>
-                    <th>수정일</th>
+                    <th>파일 형식</th>
+                    <th>등록일</th>
                     <th></th>
                   </tr>
                 </thead>
                 <tbody>
                 <%
-                if (listNotice != null) {
-                    for (int i = 0; i < listNotice.size(); i++) {
-                        NoticeModel notice = listNotice.get(i);
+                if (listCert != null) {
+                    for (int i = 0; i < listCert.size(); i++) {
+                        CertificationModel cert = listCert.get(i);
                 %>
                   <tr>
-                    <td style="vertical-align: middle;"><%=listNotice.size() - i%></td>
+                    <td style="vertical-align: middle;"><%=listCert.size() - i%></td>
                     <td style="vertical-align: middle; text-align: left; cursor: pointer;"
-                        onclick="location.href='admin.windy?menu=notice_modify&noticeId=<%=notice.getNoticeId()%>'">
-                      <%=notice.getTitle()%>
+                        onclick="location.href='admin.windy?menu=cert_modify&certId=<%=cert.getCertId()%>'">
+                      <%=cert.getTitle()%>
                     </td>
-                    <td style="vertical-align: middle;"><%=notice.getCreatedAt()%></td>
-                    <td style="vertical-align: middle;"><%=notice.getUpdatedAt()%></td>
+                    <td style="vertical-align: middle;"><%=cert.getFileType().toUpperCase()%></td>
+                    <td style="vertical-align: middle;"><%=cert.getCreatedAt()%></td>
                     <td style="vertical-align: middle;">
                       <button type="button" class="btn btn-outline-danger btn-sm"
-                              onclick="goDelete(<%=notice.getNoticeId()%>)">삭제</button>
+                              onclick="goDelete(<%=cert.getCertId()%>)">삭제</button>
                     </td>
                   </tr>
                 <%
@@ -92,18 +93,17 @@ List<NoticeModel> listNotice = (List<NoticeModel>) request.getAttribute("listNot
   <footer id="footer" class="footer">
     <div class="copyright">&copy; Copyright <strong><span>Windy</span></strong>. All Rights Reserved</div>
   </footer>
-
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
   <script src="bootstrap_nice/assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="bootstrap_nice/assets/js/main.js"></script>
   <script>
-  function goDelete(noticeId) {
+  function goDelete(certId) {
     if (!confirm("삭제하시겠습니까?")) return;
     $.ajax({
       type: "POST",
-      url: "admin.windy?mode=notice_delete",
-      data: { noticeId: noticeId },
+      url: "admin.windy?mode=cert_delete",
+      data: { certId: certId },
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {
