@@ -278,7 +278,7 @@ function goDetail(num) {
                 for (int i = 0; i < listNotice.size(); i++) {
                     NoticeModel n = listNotice.get(i);
             %>
-              <div class="faq-item <%=i == 0 ? "faq-active" : ""%>">
+              <div class="faq-item">
                 <h3><span class="num"><%=i+1%>.</span> <span><%=n.getTitle()%></span></h3>
                 <div class="faq-content">
                   <div class="notice-content"><%=n.getContent() != null ? n.getContent() : ""%></div>
