@@ -36,8 +36,8 @@ List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute
 	 <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
 	 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 	 <style>
+	   .notice-content { overflow: hidden; font-size: 14px; line-height: 1.7; }
 	   .notice-content p { margin: 0 0 4px 0; }
-	   .notice-content { font-size: 14px; line-height: 1.7; }
 	   .btn-getstarted {
 	     color: var(--contrast-color);
 	     background: var(--heading-color);
