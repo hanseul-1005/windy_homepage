@@ -56,6 +56,17 @@
                 </div>
               </div>
               <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">일 <span class="text-muted" style="font-size:12px;">(선택)</span></label>
+                <div class="col-sm-2">
+                  <select id="historyDay" class="form-select">
+                    <option value="0">선택 안 함</option>
+                    <%for (int d = 1; d <= 31; d++) {%>
+                    <option value="<%=d%>"><%=d%>일</option>
+                    <%}%>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">내용</label>
                 <div class="col-sm-10">
                   <input type="text" id="content" class="form-control" placeholder="연혁 내용을 입력하세요">
@@ -77,6 +88,7 @@
   function goAdd() {
     var historyYear  = $('#historyYear').val().trim();
     var historyMonth = $('#historyMonth').val();
+    var historyDay   = $('#historyDay').val();
     var content      = $('#content').val().trim();
 
     if (!historyYear)  { alert("연도를 입력해주세요."); return; }
@@ -86,7 +98,7 @@
     $.ajax({
       type: "POST",
       url: "admin.windy?mode=history_add",
-      data: { historyYear: historyYear, historyMonth: historyMonth, content: content },
+      data: { historyYear: historyYear, historyMonth: historyMonth, historyDay: historyDay, content: content },
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {

@@ -60,6 +60,17 @@ HistoryModel history = (HistoryModel) request.getAttribute("history");
                 </div>
               </div>
               <div class="row mb-3">
+                <label class="col-sm-2 col-form-label">일 <span class="text-muted" style="font-size:12px;">(선택)</span></label>
+                <div class="col-sm-2">
+                  <select id="historyDay" class="form-select">
+                    <option value="0" <%=history.getHistoryDay() == 0 ? "selected" : ""%>>선택 안 함</option>
+                    <%for (int d = 1; d <= 31; d++) {%>
+                    <option value="<%=d%>" <%=history.getHistoryDay() == d ? "selected" : ""%>><%=d%>일</option>
+                    <%}%>
+                  </select>
+                </div>
+              </div>
+              <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">내용</label>
                 <div class="col-sm-10">
                   <input type="text" id="content" class="form-control" value="<%=history.getContent()%>">
@@ -82,6 +93,7 @@ HistoryModel history = (HistoryModel) request.getAttribute("history");
     var historyId    = $('#historyId').val();
     var historyYear  = $('#historyYear').val().trim();
     var historyMonth = $('#historyMonth').val();
+    var historyDay   = $('#historyDay').val();
     var content      = $('#content').val().trim();
 
     if (!historyYear)  { alert("연도를 입력해주세요."); return; }
@@ -91,7 +103,7 @@ HistoryModel history = (HistoryModel) request.getAttribute("history");
     $.ajax({
       type: "POST",
       url: "admin.windy?mode=history_update",
-      data: { historyId: historyId, historyYear: historyYear, historyMonth: historyMonth, content: content },
+      data: { historyId: historyId, historyYear: historyYear, historyMonth: historyMonth, historyDay: historyDay, content: content },
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {

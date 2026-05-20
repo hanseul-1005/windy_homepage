@@ -29,14 +29,15 @@ public class HistoryDAO {
             Class.forName(dbDriver);
             connection = DriverManager.getConnection(jdbcUrl, user, password);
             pstmt = connection.prepareStatement(
-                "SELECT history_id, history_year, history_month, content, created_at " +
-                "FROM history ORDER BY history_year DESC, history_month DESC");
+                "SELECT history_id, history_year, history_month, COALESCE(history_day, 0) AS history_day, content, created_at " +
+                "FROM history ORDER BY history_year DESC, history_month DESC, COALESCE(history_day, 0) DESC");
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 HistoryModel model = new HistoryModel();
                 model.setHistoryId(rs.getInt("history_id"));
                 model.setHistoryYear(rs.getInt("history_year"));
                 model.setHistoryMonth(rs.getInt("history_month"));
+                model.setHistoryDay(rs.getInt("history_day"));
                 model.setContent(rs.getString("content"));
                 model.setCreatedAt(rs.getString("created_at"));
                 list.add(model);
@@ -55,7 +56,7 @@ public class HistoryDAO {
             Class.forName(dbDriver);
             connection = DriverManager.getConnection(jdbcUrl, user, password);
             pstmt = connection.prepareStatement(
-                "SELECT history_id, history_year, history_month, content, created_at " +
+                "SELECT history_id, history_year, history_month, COALESCE(history_day, 0) AS history_day, content, created_at " +
                 "FROM history WHERE history_id = ?");
             pstmt.setInt(1, historyId);
             rs = pstmt.executeQuery();
@@ -63,6 +64,7 @@ public class HistoryDAO {
                 model.setHistoryId(rs.getInt("history_id"));
                 model.setHistoryYear(rs.getInt("history_year"));
                 model.setHistoryMonth(rs.getInt("history_month"));
+                model.setHistoryDay(rs.getInt("history_day"));
                 model.setContent(rs.getString("content"));
                 model.setCreatedAt(rs.getString("created_at"));
             }
@@ -80,10 +82,15 @@ public class HistoryDAO {
             Class.forName(dbDriver);
             connection = DriverManager.getConnection(jdbcUrl, user, password);
             pstmt = connection.prepareStatement(
-                "INSERT INTO history(history_year, history_month, content) VALUES(?, ?, ?)");
+                "INSERT INTO history(history_year, history_month, history_day, content) VALUES(?, ?, ?, ?)");
             pstmt.setInt(1, model.getHistoryYear());
             pstmt.setInt(2, model.getHistoryMonth());
-            pstmt.setString(3, model.getContent());
+            if (model.getHistoryDay() > 0) {
+                pstmt.setInt(3, model.getHistoryDay());
+            } else {
+                pstmt.setNull(3, java.sql.Types.INTEGER);
+            }
+            pstmt.setString(4, model.getContent());
             result = pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();
@@ -99,11 +106,16 @@ public class HistoryDAO {
             Class.forName(dbDriver);
             connection = DriverManager.getConnection(jdbcUrl, user, password);
             pstmt = connection.prepareStatement(
-                "UPDATE history SET history_year=?, history_month=?, content=? WHERE history_id=?");
+                "UPDATE history SET history_year=?, history_month=?, history_day=?, content=? WHERE history_id=?");
             pstmt.setInt(1, model.getHistoryYear());
             pstmt.setInt(2, model.getHistoryMonth());
-            pstmt.setString(3, model.getContent());
-            pstmt.setInt(4, model.getHistoryId());
+            if (model.getHistoryDay() > 0) {
+                pstmt.setInt(3, model.getHistoryDay());
+            } else {
+                pstmt.setNull(3, java.sql.Types.INTEGER);
+            }
+            pstmt.setString(4, model.getContent());
+            pstmt.setInt(5, model.getHistoryId());
             result = pstmt.executeUpdate();
         } catch (Exception e) {
             e.printStackTrace();

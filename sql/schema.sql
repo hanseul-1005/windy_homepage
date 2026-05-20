@@ -71,10 +71,14 @@ CREATE TABLE history (
     history_id      INT             NOT NULL AUTO_INCREMENT,
     history_year    INT             NOT NULL,
     history_month   INT             NOT NULL,
+    history_day     INT             NULL COMMENT '일자(선택), NULL이면 월까지만 표시',
     content         VARCHAR(500)    NOT NULL,
     created_at      DATETIME        NOT NULL DEFAULT NOW(),
     PRIMARY KEY (history_id)
 );
+
+-- 기존 DB에 컬럼 추가 시 실행
+-- ALTER TABLE history ADD COLUMN history_day INT NULL AFTER history_month;
 
 -- 인증서/문서
 CREATE TABLE certification (

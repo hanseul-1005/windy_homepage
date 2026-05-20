@@ -217,11 +217,14 @@ public class Admin extends HttpServlet {
         } else if ("history_add".equals(mode)) {
             int    historyYear  = Integer.parseInt(request.getParameter("historyYear"));
             int    historyMonth = Integer.parseInt(request.getParameter("historyMonth"));
+            String dayParam     = request.getParameter("historyDay");
+            int    historyDay   = (dayParam != null && !dayParam.trim().isEmpty() && !dayParam.equals("0")) ? Integer.parseInt(dayParam) : 0;
             String content      = request.getParameter("content");
 
             HistoryModel model = new HistoryModel();
             model.setHistoryYear(historyYear);
             model.setHistoryMonth(historyMonth);
+            model.setHistoryDay(historyDay);
             model.setContent(content);
 
             int result = historyDAO.insertHistory(model);
@@ -231,12 +234,15 @@ public class Admin extends HttpServlet {
             int    historyId    = Integer.parseInt(request.getParameter("historyId"));
             int    historyYear  = Integer.parseInt(request.getParameter("historyYear"));
             int    historyMonth = Integer.parseInt(request.getParameter("historyMonth"));
+            String dayParam     = request.getParameter("historyDay");
+            int    historyDay   = (dayParam != null && !dayParam.trim().isEmpty() && !dayParam.equals("0")) ? Integer.parseInt(dayParam) : 0;
             String content      = request.getParameter("content");
 
             HistoryModel model = new HistoryModel();
             model.setHistoryId(historyId);
             model.setHistoryYear(historyYear);
             model.setHistoryMonth(historyMonth);
+            model.setHistoryDay(historyDay);
             model.setContent(content);
 
             int result = historyDAO.updateHistory(model);
