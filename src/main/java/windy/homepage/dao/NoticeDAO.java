@@ -29,13 +29,14 @@ public class NoticeDAO {
             Class.forName(dbDriver);
             connection = DriverManager.getConnection(jdbcUrl, user, password);
             pstmt = connection.prepareStatement(
-                "SELECT notice_id, title, created_at, updated_at " +
+                "SELECT notice_id, title, content, created_at, updated_at " +
                 "FROM notice ORDER BY notice_id DESC");
             rs = pstmt.executeQuery();
             while (rs.next()) {
                 NoticeModel model = new NoticeModel();
                 model.setNoticeId(rs.getInt("notice_id"));
                 model.setTitle(rs.getString("title"));
+                model.setContent(rs.getString("content"));
                 model.setCreatedAt(rs.getString("created_at"));
                 model.setUpdatedAt(rs.getString("updated_at"));
                 list.add(model);
