@@ -10,8 +10,10 @@
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="bootstrap_nice/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/quill/quill.snow.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+  <link href="bootstrap_nice/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/css/style.css" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
@@ -40,7 +42,10 @@
     .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="32px"]::before  { content: '32'; }
     .ql-snow .ql-picker.ql-size .ql-picker-label[data-value="36px"]::before,
     .ql-snow .ql-picker.ql-size .ql-picker-item[data-value="36px"]::before  { content: '36'; }
-    #thumbPreview { max-width: 200px; max-height: 150px; object-fit: contain; display: none; margin-top: 8px; border-radius: 4px; border: 1px solid #dee2e6; }
+    .img-preview { position: relative; display: inline-block; margin: 5px; }
+    .img-preview img { width: 120px; height: 90px; object-fit: cover; border-radius: 4px; border: 1px solid #dee2e6; }
+    .img-preview .btn-remove { position: absolute; top: -6px; right: -6px; width: 20px; height: 20px;
+      border-radius: 50%; font-size: 11px; padding: 0; line-height: 20px; text-align: center; }
   </style>
 </head>
 <body>
@@ -75,16 +80,16 @@
                 </div>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label">원문 링크 <span class="text-muted" style="font-size:12px;">(선택)</span></label>
+                <label class="col-sm-2 col-form-label">원문 링크 <small class="text-muted">(선택)</small></label>
                 <div class="col-sm-10">
                   <input type="url" id="sourceUrl" class="form-control" placeholder="https://...">
                 </div>
               </div>
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label">썸네일 <span class="text-muted" style="font-size:12px;">(선택)</span></label>
+                <label class="col-sm-2 col-form-label">썸네일 <small class="text-muted">(선택)</small></label>
                 <div class="col-sm-10">
-                  <input type="file" id="thumbnail" class="form-control" accept="image/*">
-                  <img id="thumbPreview" src="" alt="미리보기">
+                  <input type="file" id="imageInput" class="form-control" accept="image/*">
+                  <div id="previewArea" class="mt-2"></div>
                 </div>
               </div>
               <div class="row mb-3">
@@ -105,8 +110,14 @@
   </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
+  <script src="bootstrap_nice/assets/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap_nice/assets/vendor/chart.js/chart.umd.js"></script>
+  <script src="bootstrap_nice/assets/vendor/echarts/echarts.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/quill/quill.js"></script>
+  <script src="bootstrap_nice/assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="bootstrap_nice/assets/vendor/tinymce/tinymce.min.js"></script>
+  <script src="bootstrap_nice/assets/vendor/php-email-form/validate.js"></script>
   <script src="bootstrap_nice/assets/js/main.js"></script>
   <script>
   var Size = Quill.import('attributors/style/size');
@@ -122,25 +133,34 @@
   ];
   var quill = new Quill('#editor', { theme: 'snow', modules: { toolbar: toolbarOptions } });
 
-  // 썸네일 미리보기
-  $('#thumbnail').on('change', function() {
+  var selectedFile = null;
+
+  $('#imageInput').on('change', function() {
     var file = this.files[0];
-    if (file) {
-      var reader = new FileReader();
-      reader.onload = function(e) {
-        $('#thumbPreview').attr('src', e.target.result).show();
-      };
-      reader.readAsDataURL(file);
-    } else {
-      $('#thumbPreview').hide();
-    }
+    if (!file) return;
+    selectedFile = file;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      $('#previewArea').html(
+        '<div class="img-preview">' +
+          '<img src="' + e.target.result + '">' +
+          '<button type="button" class="btn btn-danger btn-remove" onclick="removeImage()">×</button>' +
+        '</div>'
+      );
+    };
+    reader.readAsDataURL(file);
+    $(this).val('');
   });
+
+  function removeImage() {
+    selectedFile = null;
+    $('#previewArea').empty();
+  }
 
   function goAdd() {
     var title     = $('#title').val().trim();
     var sourceUrl = $('#sourceUrl').val().trim();
     var content   = quill.root.innerHTML.trim();
-    var thumbFile = $('#thumbnail')[0].files[0];
 
     if (!title) { alert("제목을 입력해주세요."); return; }
     if (!content || content === '<p><br></p>') { alert("내용을 입력해주세요."); return; }
@@ -149,7 +169,7 @@
     formData.append('title', title);
     formData.append('sourceUrl', sourceUrl);
     formData.append('content', content);
-    if (thumbFile) formData.append('thumbnail', thumbFile);
+    if (selectedFile) formData.append('thumbnail', selectedFile);
 
     $.ajax({
       type: "POST",
