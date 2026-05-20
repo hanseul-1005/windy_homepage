@@ -95,7 +95,11 @@
               <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">내용</label>
                 <div class="col-sm-10">
-                  <div id="editor" style="min-height: 400px;"></div>
+                  <div>
+                    <div>
+                      <div id="editor" style="min-height: 400px;"></div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
