@@ -1,8 +1,8 @@
-<%@page import="windy.homepage.model.PortfolioModel"%>
+<%@page import="windy.homepage.model.ProductModel"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute("listPortfolio");
+List<ProductModel> listProduct = (List<ProductModel>) request.getAttribute("listProduct");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -28,10 +28,10 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1>포트폴리오 관리</h1>
+      <h1>프로덕트 관리</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item active">포트폴리오 목록</li>
+          <li class="breadcrumb-item active">프로덕트 목록</li>
         </ol>
       </nav>
     </div>
@@ -41,10 +41,10 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">포트폴리오 목록</h5>
+              <h5 class="card-title">프로덕트 목록</h5>
               <div style="text-align: right; margin-bottom: 10px;">
                 <button type="button" class="btn btn-outline-primary"
-                        onclick="location.href='admin.windy?menu=portfolio_add'">등록</button>
+                        onclick="location.href='admin.windy?menu=product_add'">등록</button>
               </div>
               <table class="table datatable">
                 <colgroup>
@@ -63,20 +63,20 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
                 </thead>
                 <tbody>
                 <%
-                if (listPortfolio != null) {
-                    for (int i = 0; i < listPortfolio.size(); i++) {
-                        PortfolioModel p = listPortfolio.get(i);
+                if (listProduct != null) {
+                    for (int i = 0; i < listProduct.size(); i++) {
+                        ProductModel p = listProduct.get(i);
                 %>
                   <tr>
-                    <td style="vertical-align: middle;"><%=listPortfolio.size() - i%></td>
+                    <td style="vertical-align: middle;"><%=listProduct.size() - i%></td>
                     <td style="vertical-align: middle; text-align: left; cursor: pointer;"
-                        onclick="location.href='admin.windy?menu=portfolio_modify&portfolioId=<%=p.getPortfolioId()%>'">
+                        onclick="location.href='admin.windy?menu=product_modify&productId=<%=p.getProductId()%>'">
                       <%=p.getTitle()%>
                     </td>
                     <td style="vertical-align: middle;"><%=p.getCreatedAt()%></td>
                     <td style="vertical-align: middle;">
                       <button type="button" class="btn btn-outline-danger btn-sm"
-                              onclick="goDelete(<%=p.getPortfolioId()%>)">삭제</button>
+                              onclick="goDelete(<%=p.getProductId()%>)">삭제</button>
                     </td>
                   </tr>
                 <%
@@ -100,12 +100,12 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
   <script src="bootstrap_nice/assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="bootstrap_nice/assets/js/main.js"></script>
   <script>
-  function goDelete(portfolioId) {
+  function goDelete(productId) {
     if (!confirm("삭제하시겠습니까?")) return;
     $.ajax({
       type: "POST",
-      url: "admin.windy?mode=portfolio_delete",
-      data: { portfolioId: portfolioId },
+      url: "admin.windy?mode=product_delete",
+      data: { productId: productId },
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {

@@ -24,11 +24,13 @@ import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
 import windy.homepage.dao.NoticeDAO;
 import windy.homepage.dao.PortfolioDAO;
+import windy.homepage.dao.ProductDAO;
 import windy.homepage.model.CertificationModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.HistoryModel;
 import windy.homepage.model.NoticeModel;
 import windy.homepage.model.PortfolioModel;
+import windy.homepage.model.ProductModel;
 
 @WebServlet(name = "admin", urlPatterns = { "/admin.windy" })
 @MultipartConfig(maxFileSize = 20 * 1024 * 1024, maxRequestSize = 50 * 1024 * 1024)
@@ -52,6 +54,7 @@ public class Admin extends HttpServlet {
         HistoryDAO         historyDAO    = new HistoryDAO();
         CertificationDAO   certDAO       = new CertificationDAO();
         PortfolioDAO       portfolioDAO  = new PortfolioDAO();
+        ProductDAO         productDAO    = new ProductDAO();
 
         if ("main".equals(menu)) {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/dash_board.jsp");
@@ -135,6 +138,21 @@ public class Admin extends HttpServlet {
             request.setAttribute("cert", cert);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/certification/cert_modify.jsp");
             dispatcher.forward(request, response);
+
+        } else if ("product_list".equals(menu)) {
+            request.setAttribute("listProduct", productDAO.selectListProduct());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/product/product_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("product_add".equals(menu)) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/product/product_add.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("product_modify".equals(menu)) {
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            request.setAttribute("product", productDAO.selectProduct(productId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/product/product_modify.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
@@ -159,6 +177,7 @@ public class Admin extends HttpServlet {
         HistoryDAO       historyDAO   = new HistoryDAO();
         CertificationDAO certDAO      = new CertificationDAO();
         PortfolioDAO     portfolioDAO = new PortfolioDAO();
+        ProductDAO       productDAO   = new ProductDAO();
         JSONObject       objResult    = new JSONObject();
 
         if ("notice_add".equals(mode)) {
@@ -337,10 +356,105 @@ public class Admin extends HttpServlet {
             int portfolioId = Integer.parseInt(request.getParameter("portfolioId"));
             int result      = portfolioDAO.deletePortfolio(portfolioId);
             objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("product_add".equals(mode)) {
+            String title   = request.getParameter("title");
+            String summary = request.getParameter("summary");
+            String[] features = request.getParameterValues("features");
+
+            ProductModel model = new ProductModel();
+            model.setTitle(title);
+            model.setSummary(summary);
+
+            int productId = productDAO.insertProduct(model);
+            if (productId > 0) {
+                if (features != null) {
+                    for (int i = 0; i < features.length; i++) {
+                        if (features[i] != null && !features[i].trim().isEmpty()) {
+                            productDAO.insertFeature(productId, features[i].trim(), i);
+                        }
+                    }
+                }
+                List<Part> fileParts = new ArrayList<>(request.getParts());
+                int order = 0;
+                for (Part part : fileParts) {
+                    if (!"images".equals(part.getName())) continue;
+                    if (part.getSize() == 0) continue;
+                    String fileName = saveProductImage(part, request);
+                    if (fileName != null) {
+                        productDAO.insertImage(productId, "uploads/product/" + fileName, order++);
+                    }
+                }
+                objResult.put("result", "true");
+            } else {
+                objResult.put("result", "false");
+            }
+
+        } else if ("product_update".equals(mode)) {
+            int    productId = Integer.parseInt(request.getParameter("productId"));
+            String title     = request.getParameter("title");
+            String summary   = request.getParameter("summary");
+            String[] features = request.getParameterValues("features");
+
+            ProductModel model = new ProductModel();
+            model.setProductId(productId);
+            model.setTitle(title);
+            model.setSummary(summary);
+
+            productDAO.updateProduct(model);
+            productDAO.deleteFeaturesByProductId(productId);
+            if (features != null) {
+                for (int i = 0; i < features.length; i++) {
+                    if (features[i] != null && !features[i].trim().isEmpty()) {
+                        productDAO.insertFeature(productId, features[i].trim(), i);
+                    }
+                }
+            }
+            List<Part> fileParts = new ArrayList<>(request.getParts());
+            int order = 100;
+            for (Part part : fileParts) {
+                if (!"images".equals(part.getName())) continue;
+                if (part.getSize() == 0) continue;
+                String fileName = saveProductImage(part, request);
+                if (fileName != null) {
+                    productDAO.insertImage(productId, "uploads/product/" + fileName, order++);
+                }
+            }
+            objResult.put("result", "true");
+
+        } else if ("product_image_delete".equals(mode)) {
+            int imageId = Integer.parseInt(request.getParameter("imageId"));
+            int result  = productDAO.deleteImage(imageId);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("product_delete".equals(mode)) {
+            int productId = Integer.parseInt(request.getParameter("productId"));
+            int result    = productDAO.deleteProduct(productId);
+            objResult.put("result", result > 0 ? "true" : "false");
         }
 
         PrintWriter out = response.getWriter();
         out.print(objResult);
+    }
+
+    private String saveProductImage(Part filePart, HttpServletRequest request) {
+        try {
+            String originalName = filePart.getSubmittedFileName();
+            if (originalName == null || originalName.isEmpty()) return null;
+
+            String ext      = originalName.substring(originalName.lastIndexOf('.'));
+            String fileName = UUID.randomUUID().toString() + ext;
+
+            String uploadDir = getServletContext().getRealPath("/uploads/product/");
+            File dir = new File(uploadDir);
+            if (!dir.exists()) dir.mkdirs();
+
+            filePart.write(uploadDir + File.separator + fileName);
+            return fileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     private String savePortfolioImage(Part filePart, HttpServletRequest request) {
