@@ -47,6 +47,7 @@ public class ProductDAO {
                     imgs.add(img);
                     m.setImages(imgs);
                 }
+                m.setFeatures(selectFeatures(conn, m.getProductId()));
                 list.add(m);
             }
         } catch (Exception e) { e.printStackTrace(); }

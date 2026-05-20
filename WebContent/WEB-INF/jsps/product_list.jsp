@@ -105,9 +105,6 @@ List<ProductModel> listProduct = (List<ProductModel>) request.getAttribute("list
                     <%}%>
                     </ul>
                     <%}%>
-                    <div class="mt-3">
-                      <a href="main.windy?menu=product_detail&productId=<%=p.getProductId()%>" class="btn btn-primary btn-sm">상세 보기</a>
-                    </div>
                   </div>
                   <%if (firstImg != null) {%>
                   <div class="col-lg-6 order-1 order-lg-2 text-center">
