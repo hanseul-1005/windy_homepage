@@ -5,6 +5,7 @@ import java.util.List;
 public class PortfolioModel {
     private int portfolioId;
     private String title;
+    private String category;
     private String rightContent;
     private String bottomContent;
     private String createdAt;
@@ -16,6 +17,9 @@ public class PortfolioModel {
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
+
+    public String getCategory() { return category; }
+    public void setCategory(String category) { this.category = category; }
 
     public String getRightContent() { return rightContent; }
     public void setRightContent(String rightContent) { this.rightContent = rightContent; }

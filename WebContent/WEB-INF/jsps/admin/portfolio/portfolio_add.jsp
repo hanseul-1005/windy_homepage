@@ -82,6 +82,17 @@
                   </div>
                 </div>
                 <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">카테고리</label>
+                  <div class="col-sm-10">
+                    <select id="category" class="form-select">
+                      <option value="AI">AI</option>
+                      <option value="Data">Data</option>
+                      <option value="Vision">Vision</option>
+                      <option value="Monitoring">Monitoring</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">이미지 (슬라이드)</label>
                   <div class="col-sm-10">
                     <input type="file" id="imageInput" class="form-control" accept="image/*" multiple>
@@ -172,7 +183,8 @@
   }
 
   function goAdd() {
-    var title = $('#title').val().trim();
+    var title         = $('#title').val().trim();
+    var category      = $('#category').val();
     var rightContent  = quillRight.root.innerHTML.trim();
     var bottomContent = quillBottom.root.innerHTML.trim();
 
@@ -180,6 +192,7 @@
 
     var formData = new FormData();
     formData.append('title', title);
+    formData.append('category', category);
     formData.append('rightContent', rightContent);
     formData.append('bottomContent', bottomContent);
 

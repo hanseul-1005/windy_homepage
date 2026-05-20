@@ -88,6 +88,17 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
                   </div>
                 </div>
                 <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">카테고리</label>
+                  <div class="col-sm-10">
+                    <select id="category" class="form-select">
+                      <option value="AI"<%="AI".equals(portfolio.getCategory()) ? " selected" : ""%>>AI</option>
+                      <option value="Data"<%="Data".equals(portfolio.getCategory()) ? " selected" : ""%>>Data</option>
+                      <option value="Vision"<%="Vision".equals(portfolio.getCategory()) ? " selected" : ""%>>Vision</option>
+                      <option value="Monitoring"<%="Monitoring".equals(portfolio.getCategory()) ? " selected" : ""%>>Monitoring</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">등록된 이미지</label>
                   <div class="col-sm-10">
                     <div id="existingImages">
@@ -221,6 +232,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
   function goUpdate() {
     var portfolioId   = $('#portfolioId').val();
     var title         = $('#title').val().trim();
+    var category      = $('#category').val();
     var rightContent  = quillRight.root.innerHTML.trim();
     var bottomContent = quillBottom.root.innerHTML.trim();
 
@@ -229,6 +241,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
     var formData = new FormData();
     formData.append('portfolioId', portfolioId);
     formData.append('title', title);
+    formData.append('category', category);
     formData.append('rightContent', rightContent);
     formData.append('bottomContent', bottomContent);
     selectedFiles.forEach(function(file) {

@@ -1,7 +1,15 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="windy.homepage.model.PortfolioModel"%>
+<%@page import="windy.homepage.model.PortfolioImageModel"%>
+<%@page import="windy.homepage.model.NoticeModel"%>
+<%@page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute("listPortfolio");
+List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute("listNotice");
+%>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
   	<meta charset="utf-8">
   	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   	<meta content="width=device-width, initial-scale=1.0" name="viewport">
@@ -92,115 +100,33 @@ function goDetail(num) {
             <li data-filter=".filter-books">Monitoring</li>
           </ul><!-- End Portfolio Filters -->
 
-          <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200" style="position: relative; height: 1612.25px;">
-          
-			<!-- ai -->
-			
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app" style="position: absolute; left: 0px; top: 0px;">
-              <div class="portfolio-content h-100" onclick="javascript: goDetail(1)">
-                <img src="img/ai/ai1.png" class="img-fluid" alt="">
+          <div class="row gy-4 isotope-container" data-aos="fade-up" data-aos-delay="200">
+          <%
+          if (listPortfolio != null) {
+              for (PortfolioModel p : listPortfolio) {
+                  String thumbSrc = "img/no_image.png";
+                  if (p.getImages() != null && !p.getImages().isEmpty()) {
+                      thumbSrc = p.getImages().get(0).getImagePath();
+                  }
+                  String cat = p.getCategory() != null ? p.getCategory() : "AI";
+                  String filterClass = "filter-app";
+                  if ("Data".equals(cat))       filterClass = "filter-product";
+                  else if ("Vision".equals(cat)) filterClass = "filter-branding";
+                  else if ("Monitoring".equals(cat)) filterClass = "filter-books";
+          %>
+            <div class="col-lg-4 col-md-6 portfolio-item isotope-item <%=filterClass%>">
+              <div class="portfolio-content h-100"
+                   onclick="location.href='main.windy?menu=portfolio_detail&portfolioId=<%=p.getPortfolioId()%>'">
+                <img src="<%=thumbSrc%>" class="img-fluid" alt="<%=p.getTitle()%>">
                 <div class="portfolio-info">
-                  <h4><a href="javascript: goDetail(1)" title="More Details">객체 추적 기반 지능형 교통 시스템</a></h4>
-                  <p>다양한 차량, 보행자, 이륜차 등의 객체를 인식하고 분석하는 인공지능 기반 지능형 교통 관리 솔루션</p>
+                  <h4><a href="main.windy?menu=portfolio_detail&portfolioId=<%=p.getPortfolioId()%>" title="More Details"><%=p.getTitle()%></a></h4>
                 </div>
               </div>
             </div>
-            
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app" style="position: absolute; left: 0px; top: 0px;">
-              <div class="portfolio-content h-100" style="text-align: center;" onclick="javascript: goDetail(2)">
-                <img src="img/ai/ai2.png" class="img-fluid" alt="">
-                <div class="portfolio-info" style="text-align: left;">
-                  <h4><a href="javascript: goDetail(2)" title="More Details">멀티 바코드 인식 시스템</a></h4>
-                  <p>한 번의 스캔으로 인공지능 기반 객체 인식 알고리즘을 이용하여 여러 개의 바코드를 동시에 인식하고 처리할 수 있는 고성능 솔루션</p>
-                </div>
-              </div>
-            </div>
-            <!-- 
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-app" style="position: absolute; left: 0px; top: 0px;">
-              <div class="portfolio-content h-100" onclick="javascript: goDetail(3)">
-                <img src="img/ai/ai3.png" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="javascript: goDetail(3)" title="More Details">지능형 독거 노인 케어 시스템</a></h4>
-                  <p>IoT 기반 스마트 약 디스펜서와 라즈베리 파이를 일원화하여 낙상 관리 및 약 복용, 낙상에 대한 신속 응급 대응이 가능한 시스템</p>
-                </div>
-              </div>
-            </div>
-             -->
-            <!-- End ai -->
-            
-            
-			<!-- Data -->
-			
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product" style="position: absolute; left: 440px; top: 0px;">
-              <div class="portfolio-content h-100" onclick="javascript: goDetail(4)">
-                <img src="img/data/data1_1.png" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="javascript: goDetail(4)" title="More Details">지하차도 침수 예측용 인공지능 모델 개발을 위한 데이터 취득 시스템 구축</a></h4>
-                  <p>새로운 기후 변화에 대응하기 위해, 지하차도 및 주변 위험지역의 침수 위험 상황을 실시간으로 모니터링하고 데이터를 수집하는 솔루션</p>
-                </div>
-              </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product" style="position: absolute; left: 440px; top: 0px;">
-              <div class="portfolio-content h-100" onclick="javascript: goDetail(5)">
-                <img src="img/data/data2.png" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="javascript: goDetail(5)" title="More Details">생산이력 관리 시스템</a></h4>
-                  <p>생산라인에서 생성되는 각 제품의 정보를 데이터베이스로 관리하여, 제조부터 출하까지의 모든 이력을 체계적으로 추적·관리할 수 있도록 지원하는 솔루션</p>
-                </div>
-              </div>
-            </div>
-            
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-product" style="position: absolute; left: 440px; top: 0px;">
-              <div class="portfolio-content h-100" onclick="javascript: goDetail(6)">
-                <img src="img/monitoring/monitoring3.png" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="javascript: goDetail(6)" title="More Details">긴급 재난 대응 ICT융합 스마트 야전병원 플랫폼 개발</a></h4>
-                  <p>차량, 병원, 병리 정보 등 다양한 의료 관련 데이터를 통합하여 실시간으로 관리하고 모니터링할 수 있는 솔루션</p>
-                </div>
-              </div>
-            </div>
-            
-            <!-- End Data -->
-            
-			<!-- Vision -->
-			
-            <div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-branding" style="position: absolute; left: 880px; top: 0px;">
-              <div class="portfolio-content h-100" style="text-align: center;" onclick="javascript: goDetail(7)">
-                <img src="img/vision/vision1.png" class="img-fluid" alt="">
-                <div class="portfolio-info" style="text-align: left;">
-                  <h4><a href="javascript: goDetail(7)" title="More Details">머신비전 기반 치수 검사 시스템</a></h4>
-                  <p>고성능 카메라와 딥러닝 기반 영상 처리 기술을 활용하여 제품의 치수를 자동으로 측정하고 검증하는 솔루션</p>
-                </div>
-              </div>
-            </div>
-            
-            <!-- End Vision -->
-            
-			<!-- Monitoring -->
-			<!-- 
-			<div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-books" style="position: absolute; left: 440px; top: 806.124px;">
-              <div class="portfolio-content h-100" onclick="javascript: goDetail(8)">
-                <img src="img/monitoring/monitoring1.png" class="img-fluid" alt="">
-                <div class="portfolio-info">
-                  <h4><a href="javascript: goDetail(8)" title="More Details">지하차도 주변 위험지역 침수 상황 모니터링 시스템</a></h4>
-                  <p>GIS기반 지하차도 주변 위험지역도 동시 모니터링을 통한 선제적 침수 상황 모니터링 시스템 구축</p>
-                </div>
-              </div>
-            </div>
-             -->
-			<div class="col-lg-4 col-md-6 portfolio-item isotope-item filter-books" style="position: absolute; left: 440px; top: 806.124px;">
-              <div class="portfolio-content h-100" style="text-align: center;" onclick="javascript: goDetail(9)">
-                <img src="img/monitoring/monitoring2.png" class="img-fluid" alt="">
-                <div class="portfolio-info" style="text-align: left;">
-                  <h4><a href="javascript: goDetail(9)" title="More Details">LTE Cat.M1 기반 데이터 획득 시스템</a></h4>
-                  <p>전국 어디서나 설치된 장비로부터 데이터를 실시간으로 수집하고, 웹페이지를 통해 모니터링할 수 있는 통합 관제 솔루션</p>
-                </div>
-              </div>
-            </div>
-            
-            <!-- End Monitoring -->
-
+          <%
+              }
+          }
+          %>
           </div><!-- End Portfolio Container -->
 
         </div>
@@ -326,46 +252,30 @@ function goDetail(num) {
           <div class="col-lg-8" data-aos="fade-up" data-aos-delay="200">
 
             <div class="faq-container">
+            <%
+            if (listNotice != null && !listNotice.isEmpty()) {
+                for (int i = 0; i < listNotice.size(); i++) {
+                    NoticeModel n = listNotice.get(i);
+            %>
+              <div class="faq-item <%=i == 0 ? "faq-active" : ""%>">
+                <h3><span class="num"><%=i+1%>.</span> <span><%=n.getTitle()%></span></h3>
+                <div class="faq-content">
+                  <p><%=n.getContent() != null ? n.getContent().replaceAll("<[^>]*>", "") : ""%></p>
+                </div>
+                <i class="faq-toggle bi bi-chevron-right"></i>
+              </div>
+            <%
+                }
+            } else {
+            %>
               <div class="faq-item faq-active">
-                <h3><span class="num">1.</span> <span>4월 1일자 홈페이지 개편</span></h3>
-                <div class="faq-content">
-                  <p>윈디의 홈페이지가 4월 1일자로 디자인 및 기능 관련 개편되었습니다.<br/>윅스로 되어있던 홈페이지를 CMS 기능을 차용하여 신규 홈페이지로 개발 진행 완료하였습니다.</p>
-                </div>
+                <h3><span>등록된 공지사항이 없습니다.</span></h3>
+                <div class="faq-content"><p></p></div>
                 <i class="faq-toggle bi bi-chevron-right"></i>
-              </div><!-- End Faq item-->
-
-              <div class="faq-item">
-                <h3><span class="num">2.</span> <span>홈페이지 개발 관련 개발 문의 시 지침 사항</span></h3>
-                <div class="faq-content">
-                  <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
-                </div>
-                <i class="faq-toggle bi bi-chevron-right"></i>
-              </div><!-- End Faq item-->
-
-              <div class="faq-item">
-                <h3><span class="num">3.</span> <span>AI와 Data 관련 개발 문의 시 지침 사항</span></h3>
-                <div class="faq-content">
-                  <p>Eleifend mi in nulla posuere sollicitudin aliquam ultrices sagittis orci. Faucibus pulvinar elementum integer enim. Sem nulla pharetra diam sit amet nisl suscipit. Rutrum tellus pellentesque eu tincidunt. Lectus urna duis convallis convallis tellus. Urna molestie at elementum eu facilisis sed odio morbi quis</p>
-                </div>
-                <i class="faq-toggle bi bi-chevron-right"></i>
-              </div><!-- End Faq item-->
-
-              <div class="faq-item">
-                <h3><span class="num">4.</span> <span>키오스크 관련 개발 문의 시 지침 사항</span></h3>
-                <div class="faq-content">
-                  <p>Dolor sit amet consectetur adipiscing elit pellentesque habitant morbi. Id interdum velit laoreet id donec ultrices. Fringilla phasellus faucibus scelerisque eleifend donec pretium. Est pellentesque elit ullamcorper dignissim. Mauris ultrices eros in cursus turpis massa tincidunt dui.</p>
-                </div>
-                <i class="faq-toggle bi bi-chevron-right"></i>
-              </div><!-- End Faq item-->
-
-              <div class="faq-item">
-                <h3><span class="num">5.</span> <span>인공지능 관련 개발 문의 시 지침 사항</span></h3>
-                <div class="faq-content">
-                  <p>Molestie a iaculis at erat pellentesque adipiscing commodo. Dignissim suspendisse in est ante in. Nunc vel risus commodo viverra maecenas accumsan. Sit amet nisl suscipit adipiscing bibendum est. Purus gravida quis blandit turpis cursus in</p>
-                </div>
-                <i class="faq-toggle bi bi-chevron-right"></i>
-              </div><!-- End Faq item-->
-
+              </div>
+            <%
+            }
+            %>
             </div>
 
           </div>
@@ -418,31 +328,27 @@ function goDetail(num) {
           </div>
 
           <div class="col-lg-6">
-            <form action="forms/contact.php" method="post" class="php-email-form" data-aos="fade-up" data-aos-delay="500">
+            <form id="contactForm" class="php-email-form" data-aos="fade-up" data-aos-delay="500">
               <div class="row gy-4">
 
                 <div class="col-md-6">
-                  <input type="text" name="name" class="form-control" placeholder="Your Name" required="">
+                  <input type="text" id="contactName" class="form-control" placeholder="Your Name" required="">
                 </div>
 
-                <div class="col-md-6 ">
-                  <input type="email" class="form-control" name="email" placeholder="Your Email" required="">
-                </div>
-
-                <div class="col-md-12">
-                  <input type="text" class="form-control" name="subject" placeholder="Subject" required="">
+                <div class="col-md-6">
+                  <input type="email" id="contactEmail" class="form-control" placeholder="Your Email" required="">
                 </div>
 
                 <div class="col-md-12">
-                  <textarea class="form-control" name="message" rows="4" placeholder="Message" required=""></textarea>
+                  <input type="text" id="contactSubject" class="form-control" placeholder="Subject" required="">
+                </div>
+
+                <div class="col-md-12">
+                  <textarea class="form-control" id="contactContent" rows="4" placeholder="Message" required=""></textarea>
                 </div>
 
                 <div class="col-md-12 text-center">
-                  <div class="loading">Loading</div>
-                  <div class="error-message"></div>
-                  <div class="sent-message">Your message has been sent. Thank you!</div>
-
-                  <button type="submit">보내기</button>
+                  <button type="button" onclick="goContact()">보내기</button>
                 </div>
 
               </div>
@@ -466,6 +372,7 @@ function goDetail(num) {
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="bootstrap_enno/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="bootstrap_enno/assets/vendor/php-email-form/validate.js"></script>
   <script src="bootstrap_enno/assets/vendor/aos/aos.js"></script>
@@ -476,6 +383,35 @@ function goDetail(num) {
 
   <!-- Main JS File -->
   <script src="bootstrap_enno/assets/js/main.js"></script>
+  <script>
+  function goContact() {
+    var name    = $('#contactName').val().trim();
+    var email   = $('#contactEmail').val().trim();
+    var subject = $('#contactSubject').val().trim();
+    var content = $('#contactContent').val().trim();
+
+    if (!name)    { alert("이름을 입력해주세요."); return; }
+    if (!email)   { alert("이메일을 입력해주세요."); return; }
+    if (!subject) { alert("제목을 입력해주세요."); return; }
+    if (!content) { alert("내용을 입력해주세요."); return; }
+
+    $.ajax({
+      type: "POST",
+      url: "main.windy?mode=contact_add",
+      data: { name: name, email: email, subject: subject, content: content },
+      dataType: "json",
+      success: function(ret) {
+        if (ret.result === "true") {
+          alert("문의가 접수되었습니다. 감사합니다.");
+          $('#contactForm')[0].reset();
+        } else {
+          alert("전송에 실패했습니다. 다시 시도해주세요.");
+        }
+      },
+      error: function() { alert("오류가 발생했습니다."); }
+    });
+  }
+  </script>
 
 </body>
 
