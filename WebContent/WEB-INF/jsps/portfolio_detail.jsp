@@ -31,7 +31,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
     .ql-container.ql-snow { border: none; }
     .portfolio-info-box { background: #f8f9fa; border-radius: 8px; padding: 20px; }
     .portfolio-details-slider .swiper-slide img {
-      max-height: 400px;
+      max-height: 500px;
       width: 100%;
       object-fit: contain;
     }
