@@ -297,12 +297,14 @@ public class Admin extends HttpServlet {
         } else if ("portfolio_add".equals(mode)) {
             String title         = request.getParameter("title");
             String category      = request.getParameter("category");
+            String summary       = request.getParameter("summary");
             String rightContent  = request.getParameter("rightContent");
             String bottomContent = request.getParameter("bottomContent");
 
             PortfolioModel model = new PortfolioModel();
             model.setTitle(title);
             model.setCategory(category);
+            model.setSummary(summary);
             model.setRightContent(rightContent);
             model.setBottomContent(bottomContent);
 
@@ -327,6 +329,7 @@ public class Admin extends HttpServlet {
             int    portfolioId   = Integer.parseInt(request.getParameter("portfolioId"));
             String title         = request.getParameter("title");
             String category      = request.getParameter("category");
+            String summary       = request.getParameter("summary");
             String rightContent  = request.getParameter("rightContent");
             String bottomContent = request.getParameter("bottomContent");
 
@@ -334,6 +337,7 @@ public class Admin extends HttpServlet {
             model.setPortfolioId(portfolioId);
             model.setTitle(title);
             model.setCategory(category);
+            model.setSummary(summary);
             model.setRightContent(rightContent);
             model.setBottomContent(bottomContent);
 

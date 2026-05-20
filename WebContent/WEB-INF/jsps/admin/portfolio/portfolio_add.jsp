@@ -93,6 +93,12 @@
                   </div>
                 </div>
                 <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">간략 설명<br><small class="text-muted">(메인 목록 표시)</small></label>
+                  <div class="col-sm-10">
+                    <textarea id="summary" class="form-control" rows="2" maxlength="500" placeholder="메인 페이지 포트폴리오 카드에 표시될 간략한 설명을 입력하세요."></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">이미지 (슬라이드)</label>
                   <div class="col-sm-10">
                     <input type="file" id="imageInput" class="form-control" accept="image/*" multiple>
@@ -185,6 +191,7 @@
   function goAdd() {
     var title         = $('#title').val().trim();
     var category      = $('#category').val();
+    var summary       = $('#summary').val().trim();
     var rightContent  = quillRight.root.innerHTML.trim();
     var bottomContent = quillBottom.root.innerHTML.trim();
 
@@ -193,6 +200,7 @@
     var formData = new FormData();
     formData.append('title', title);
     formData.append('category', category);
+    formData.append('summary', summary);
     formData.append('rightContent', rightContent);
     formData.append('bottomContent', bottomContent);
 

@@ -120,6 +120,9 @@ function goDetail(num) {
                 <img src="<%=thumbSrc%>" class="img-fluid" alt="<%=p.getTitle()%>">
                 <div class="portfolio-info">
                   <h4><a href="main.windy?menu=portfolio_detail&portfolioId=<%=p.getPortfolioId()%>" title="More Details"><%=p.getTitle()%></a></h4>
+                  <%if (p.getSummary() != null && !p.getSummary().isEmpty()) {%>
+                  <p><%=p.getSummary()%></p>
+                  <%}%>
                 </div>
               </div>
             </div>

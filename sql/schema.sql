@@ -44,6 +44,7 @@ CREATE TABLE portfolio (
     portfolio_id    INT             NOT NULL AUTO_INCREMENT,
     title           VARCHAR(200)    NOT NULL,
     category        VARCHAR(20)     NOT NULL DEFAULT 'AI' COMMENT 'AI / Data / Vision / Monitoring',
+    summary         VARCHAR(500),
     right_content   LONGTEXT,
     bottom_content  LONGTEXT,
     created_at      DATETIME        NOT NULL DEFAULT NOW(),
@@ -53,6 +54,7 @@ CREATE TABLE portfolio (
 
 -- 기존 DB에 컬럼 추가 시 실행
 -- ALTER TABLE portfolio ADD COLUMN category VARCHAR(20) NOT NULL DEFAULT 'AI' AFTER title;
+-- ALTER TABLE portfolio ADD COLUMN summary VARCHAR(500) AFTER category;
 
 -- 포트폴리오 이미지 (슬라이드)
 CREATE TABLE portfolio_image (

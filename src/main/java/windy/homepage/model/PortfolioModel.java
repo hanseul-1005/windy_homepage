@@ -6,6 +6,7 @@ public class PortfolioModel {
     private int portfolioId;
     private String title;
     private String category;
+    private String summary;
     private String rightContent;
     private String bottomContent;
     private String createdAt;
@@ -20,6 +21,9 @@ public class PortfolioModel {
 
     public String getCategory() { return category; }
     public void setCategory(String category) { this.category = category; }
+
+    public String getSummary() { return summary; }
+    public void setSummary(String summary) { this.summary = summary; }
 
     public String getRightContent() { return rightContent; }
     public void setRightContent(String rightContent) { this.rightContent = rightContent; }

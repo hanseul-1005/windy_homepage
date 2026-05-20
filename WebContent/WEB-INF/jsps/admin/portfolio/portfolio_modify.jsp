@@ -99,6 +99,12 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
                   </div>
                 </div>
                 <div class="row mb-3">
+                  <label class="col-sm-2 col-form-label">간략 설명<br><small class="text-muted">(메인 목록 표시)</small></label>
+                  <div class="col-sm-10">
+                    <textarea id="summary" class="form-control" rows="2" maxlength="500" placeholder="메인 페이지 포트폴리오 카드에 표시될 간략한 설명을 입력하세요."><%=portfolio.getSummary() != null ? portfolio.getSummary() : ""%></textarea>
+                  </div>
+                </div>
+                <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">등록된 이미지</label>
                   <div class="col-sm-10">
                     <div id="existingImages">
@@ -233,6 +239,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
     var portfolioId   = $('#portfolioId').val();
     var title         = $('#title').val().trim();
     var category      = $('#category').val();
+    var summary       = $('#summary').val().trim();
     var rightContent  = quillRight.root.innerHTML.trim();
     var bottomContent = quillBottom.root.innerHTML.trim();
 
@@ -242,6 +249,7 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
     formData.append('portfolioId', portfolioId);
     formData.append('title', title);
     formData.append('category', category);
+    formData.append('summary', summary);
     formData.append('rightContent', rightContent);
     formData.append('bottomContent', bottomContent);
     selectedFiles.forEach(function(file) {

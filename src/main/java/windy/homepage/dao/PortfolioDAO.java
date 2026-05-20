@@ -26,7 +26,7 @@ public class PortfolioDAO {
 
     public List<PortfolioModel> selectListPortfolio() {
         List<PortfolioModel> list = new ArrayList<>();
-        String sql = "SELECT portfolio_id, title, category, created_at FROM portfolio ORDER BY portfolio_id DESC";
+        String sql = "SELECT portfolio_id, title, category, summary, created_at FROM portfolio ORDER BY portfolio_id DESC";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -35,6 +35,7 @@ public class PortfolioDAO {
                 m.setPortfolioId(rs.getInt("portfolio_id"));
                 m.setTitle(rs.getString("title"));
                 m.setCategory(rs.getString("category"));
+                m.setSummary(rs.getString("summary"));
                 m.setCreatedAt(rs.getString("created_at"));
                 list.add(m);
             }
@@ -44,7 +45,7 @@ public class PortfolioDAO {
 
     public PortfolioModel selectPortfolio(int portfolioId) {
         PortfolioModel portfolio = null;
-        String sql = "SELECT portfolio_id, title, category, right_content, bottom_content, created_at FROM portfolio WHERE portfolio_id = ?";
+        String sql = "SELECT portfolio_id, title, category, summary, right_content, bottom_content, created_at FROM portfolio WHERE portfolio_id = ?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, portfolioId);
@@ -54,6 +55,7 @@ public class PortfolioDAO {
                     portfolio.setPortfolioId(rs.getInt("portfolio_id"));
                     portfolio.setTitle(rs.getString("title"));
                     portfolio.setCategory(rs.getString("category"));
+                    portfolio.setSummary(rs.getString("summary"));
                     portfolio.setRightContent(rs.getString("right_content"));
                     portfolio.setBottomContent(rs.getString("bottom_content"));
                     portfolio.setCreatedAt(rs.getString("created_at"));
@@ -84,13 +86,14 @@ public class PortfolioDAO {
     }
 
     public int insertPortfolio(PortfolioModel model) {
-        String sql = "INSERT INTO portfolio (title, category, right_content, bottom_content) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO portfolio (title, category, summary, right_content, bottom_content) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, PreparedStatement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, model.getTitle());
             ps.setString(2, model.getCategory() != null ? model.getCategory() : "AI");
-            ps.setString(3, model.getRightContent());
-            ps.setString(4, model.getBottomContent());
+            ps.setString(3, model.getSummary());
+            ps.setString(4, model.getRightContent());
+            ps.setString(5, model.getBottomContent());
             int result = ps.executeUpdate();
             if (result > 0) {
                 try (ResultSet rs = ps.getGeneratedKeys()) {
@@ -114,14 +117,15 @@ public class PortfolioDAO {
     }
 
     public int updatePortfolio(PortfolioModel model) {
-        String sql = "UPDATE portfolio SET title=?, category=?, right_content=?, bottom_content=? WHERE portfolio_id=?";
+        String sql = "UPDATE portfolio SET title=?, category=?, summary=?, right_content=?, bottom_content=? WHERE portfolio_id=?";
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, model.getTitle());
             ps.setString(2, model.getCategory() != null ? model.getCategory() : "AI");
-            ps.setString(3, model.getRightContent());
-            ps.setString(4, model.getBottomContent());
-            ps.setInt(5, model.getPortfolioId());
+            ps.setString(3, model.getSummary());
+            ps.setString(4, model.getRightContent());
+            ps.setString(5, model.getBottomContent());
+            ps.setInt(6, model.getPortfolioId());
             return ps.executeUpdate();
         } catch (Exception e) { e.printStackTrace(); }
         return 0;
