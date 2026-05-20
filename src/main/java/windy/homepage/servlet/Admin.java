@@ -445,14 +445,6 @@ public class Admin extends HttpServlet {
         out.print(objResult);
     }
 
-    private String getUploadBasePath() {
-        String path = getServletContext().getInitParameter("uploadBasePath");
-        if (path == null || path.isEmpty()) {
-            path = getServletContext().getRealPath("/uploads/");
-        }
-        return path;
-    }
-
     private String saveProductImage(Part filePart, HttpServletRequest request) {
         try {
             String originalName = filePart.getSubmittedFileName();
@@ -461,11 +453,11 @@ public class Admin extends HttpServlet {
             String ext      = originalName.substring(originalName.lastIndexOf('.'));
             String fileName = UUID.randomUUID().toString() + ext;
 
-            String uploadDir = getUploadBasePath() + "product/";
+            String uploadDir = getServletContext().getRealPath("/uploads/product/");
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 
-            filePart.write(uploadDir + fileName);
+            filePart.write(uploadDir + File.separator + fileName);
             return fileName;
         } catch (Exception e) {
             e.printStackTrace();
@@ -481,11 +473,11 @@ public class Admin extends HttpServlet {
             String ext      = originalName.substring(originalName.lastIndexOf('.'));
             String fileName = UUID.randomUUID().toString() + ext;
 
-            String uploadDir = getUploadBasePath() + "portfolio/";
+            String uploadDir = getServletContext().getRealPath("/uploads/portfolio/");
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 
-            filePart.write(uploadDir + fileName);
+            filePart.write(uploadDir + File.separator + fileName);
             return fileName;
         } catch (Exception e) {
             e.printStackTrace();
@@ -501,11 +493,11 @@ public class Admin extends HttpServlet {
             String ext      = originalName.substring(originalName.lastIndexOf('.'));
             String fileName = UUID.randomUUID().toString() + ext;
 
-            String uploadDir = getUploadBasePath() + "certification/";
+            String uploadDir = getServletContext().getRealPath("/uploads/certification/");
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 
-            filePart.write(uploadDir + fileName);
+            filePart.write(uploadDir + File.separator + fileName);
             return fileName;
         } catch (Exception e) {
             e.printStackTrace();
