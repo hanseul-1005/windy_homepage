@@ -1,7 +1,9 @@
-<%@page import="windy.homepage.model.NoticeModel"%>
+<%@page import="windy.homepage.model.BoardModel"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-NoticeModel notice = (NoticeModel) request.getAttribute("notice");
+BoardModel board = (BoardModel) request.getAttribute("board");
+String boardName = (board != null) ? board.getBoardName() : "게시판";
+int boardId = (board != null) ? board.getBoardId() : -1;
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -55,11 +57,12 @@ NoticeModel notice = (NoticeModel) request.getAttribute("notice");
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1>Notice 수정</h1>
+      <h1><%=boardName%> 등록</h1>
       <nav>
         <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="admin.windy?menu=notice_list">공지사항 목록</a></li>
-          <li class="breadcrumb-item active">공지사항 수정</li>
+          <li class="breadcrumb-item"><a href="admin.windy?menu=board_list">게시판 관리</a></li>
+          <li class="breadcrumb-item"><a href="admin.windy?menu=board_post_list&boardId=<%=boardId%>"><%=boardName%> 글 목록</a></li>
+          <li class="breadcrumb-item active">글 등록</li>
         </ol>
       </nav>
     </div>
@@ -69,17 +72,16 @@ NoticeModel notice = (NoticeModel) request.getAttribute("notice");
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <h5 class="card-title">공지사항 글 수정</h5>
+              <h5 class="card-title"><%=boardName%> 글 작성</h5>
               <div style="text-align: right; margin-bottom: 10px;">
-                <button type="button" class="btn btn-outline-secondary" onclick="location.href='admin.windy?menu=notice_list'">목록</button>
-                <button type="button" class="btn btn-primary ms-2" onclick="goUpdate()">수정</button>
+                <button type="button" class="btn btn-outline-secondary" onclick="location.href='admin.windy?menu=board_post_list&boardId=<%=boardId%>'">목록</button>
+                <button type="button" class="btn btn-primary ms-2" onclick="goAdd()">등록</button>
               </div>
               <form>
-                <input type="hidden" id="noticeId" value="<%=notice.getNoticeId()%>">
                 <div class="row mb-3">
                   <label class="col-sm-2 col-form-label">제목</label>
                   <div class="col-sm-10">
-                    <input type="text" id="title" class="form-control" value="<%=notice.getTitle()%>">
+                    <input type="text" id="title" class="form-control">
                   </div>
                 </div>
                 <div class="row mb-3">
@@ -130,66 +132,67 @@ NoticeModel notice = (NoticeModel) request.getAttribute("notice");
   ];
   Quill.register('modules/resize', window.QuillResizeImage);
 
+  var quill = new Quill('#editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: toolbarOptions,
+      resize: {}
+    }
+  });
+
   // 이미지 버튼: base64 대신 서버 업로드 후 URL 삽입
-  function bindImageUpload(q) {
-    q.getModule('toolbar').addHandler('image', function() {
-      var input = document.createElement('input');
-      input.setAttribute('type', 'file');
-      input.setAttribute('accept', 'image/*');
-      input.click();
+  quill.getModule('toolbar').addHandler('image', function() {
+    var input = document.createElement('input');
+    input.setAttribute('type', 'file');
+    input.setAttribute('accept', 'image/*');
+    input.click();
 
-      input.onchange = function() {
-        var file = input.files[0];
-        if (!file) return;
+    input.onchange = function() {
+      var file = input.files[0];
+      if (!file) return;
 
-        var formData = new FormData();
-        formData.append('image', file);
+      var formData = new FormData();
+      formData.append('image', file);
 
-        $.ajax({
-          type: "POST",
-          url: "admin.windy?mode=editor_image_upload",
-          data: formData,
-          processData: false,
-          contentType: false,
-          dataType: "json",
-          success: function(ret) {
-            if (ret.result === "true") {
-              var range = q.getSelection(true);
-              q.insertEmbed(range.index, 'image', ret.url);
-              q.setSelection(range.index + 1);
-            } else {
-              alert(ret.msg || "이미지 업로드에 실패했습니다.");
-            }
-          },
-          error: function() { alert("이미지 업로드 중 오류가 발생했습니다."); }
-        });
-      };
-    });
-  }
+      $.ajax({
+        type: "POST",
+        url: "admin.windy?mode=editor_image_upload",
+        data: formData,
+        processData: false,
+        contentType: false,
+        dataType: "json",
+        success: function(ret) {
+          if (ret.result === "true") {
+            var range = quill.getSelection(true);
+            quill.insertEmbed(range.index, 'image', ret.url);
+            quill.setSelection(range.index + 1);
+          } else {
+            alert(ret.msg || "이미지 업로드에 실패했습니다.");
+          }
+        },
+        error: function() { alert("이미지 업로드 중 오류가 발생했습니다."); }
+      });
+    };
+  });
 
-  var quill = new Quill('#editor', { theme: 'snow', modules: { toolbar: toolbarOptions, resize: {} } });
-  bindImageUpload(quill);
-  quill.root.innerHTML = `<%=notice.getContent() != null ? notice.getContent() : ""%>`;
-
-  function goUpdate() {
-    var noticeId = $('#noticeId').val();
-    var title    = $('#title').val().trim();
-    var content  = quill.root.innerHTML.trim();
+  function goAdd() {
+    var title   = $('#title').val().trim();
+    var content = quill.root.innerHTML.trim();
 
     if (!title) { alert("제목을 입력해주세요."); return; }
     if (!content || content === '<p><br></p>') { alert("내용을 입력해주세요."); return; }
 
     $.ajax({
       type: "POST",
-      url: "admin.windy?mode=notice_update",
-      data: { noticeId: noticeId, title: title, content: content },
+      url: "admin.windy?mode=board_post_add",
+      data: { boardId: <%=boardId%>, title: title, content: content },
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {
-          alert("수정되었습니다.");
-          location.href = "admin.windy?menu=notice_list";
+          alert("등록되었습니다.");
+          location.href = "admin.windy?menu=board_post_list&boardId=<%=boardId%>";
         } else {
-          alert("수정에 실패했습니다.");
+          alert(ret.msg || "등록에 실패했습니다.");
         }
       },
       error: function() { alert("오류가 발생했습니다."); }

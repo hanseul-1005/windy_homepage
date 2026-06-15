@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.json.simple.JSONObject;
 
+import windy.homepage.dao.BoardDAO;
 import windy.homepage.dao.CertificationDAO;
 import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
@@ -20,10 +21,14 @@ import windy.homepage.dao.NoticeDAO;
 import windy.homepage.dao.PortfolioDAO;
 import windy.homepage.dao.PressDAO;
 import windy.homepage.dao.ProductDAO;
+import windy.homepage.dao.VideoDAO;
+import windy.homepage.model.BoardModel;
+import windy.homepage.model.BoardPostModel;
 import windy.homepage.model.ProductModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.NoticeModel;
 import windy.homepage.model.PortfolioModel;
+import windy.homepage.model.VideoModel;
 
 @WebServlet(name = "Main", urlPatterns = { "/main.windy" })
 public class Main extends HttpServlet {
@@ -43,12 +48,19 @@ public class Main extends HttpServlet {
         PortfolioDAO     portfolioDAO = new PortfolioDAO();
         ProductDAO       productDAO   = new ProductDAO();
         PressDAO         pressDAO     = new PressDAO();
+        VideoDAO         videoDAO     = new VideoDAO();
+        BoardDAO         boardDAO     = new BoardDAO();
+
+        // 동적 게시판 메뉴 (모든 페이지의 top_menu에서 사용)
+        request.setAttribute("menuBoards", boardDAO.selectActiveBoards());
 
         if ("home".equals(menu)) {
             List<PortfolioModel> listPortfolio = portfolioDAO.selectListPortfolio();
             List<NoticeModel>    listNotice    = noticeDAO.selectListNotice();
+            List<VideoModel>     listVideo     = videoDAO.selectListVideo();
             request.setAttribute("listPortfolio", listPortfolio);
             request.setAttribute("listNotice", listNotice);
+            request.setAttribute("listVideo", listVideo);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/main.jsp");
             dispatcher.forward(request, response);
 
@@ -97,6 +109,28 @@ public class Main extends HttpServlet {
             int pressId = Integer.parseInt(request.getParameter("pressId"));
             request.setAttribute("press", pressDAO.selectPress(pressId));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/press_detail.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("video_list".equals(menu)) {
+            request.setAttribute("listVideo", videoDAO.selectListVideo());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/video_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("board".equals(menu)) {
+            int boardId = Integer.parseInt(request.getParameter("boardId"));
+            BoardModel board = boardDAO.selectBoard(boardId);
+            request.setAttribute("board", board);
+            request.setAttribute("listPost", boardDAO.selectListPost(boardId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/board_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("board_detail".equals(menu)) {
+            int postId = Integer.parseInt(request.getParameter("postId"));
+            boardDAO.increaseViewCount(postId);
+            BoardPostModel post = boardDAO.selectPost(postId);
+            request.setAttribute("post", post);
+            request.setAttribute("board", boardDAO.selectBoard(post.getBoardId()));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/board_detail.jsp");
             dispatcher.forward(request, response);
         }
     }

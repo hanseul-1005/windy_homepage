@@ -25,6 +25,12 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
   <link href="bootstrap_enno/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
+  <style>
+    .no-img-box { width:100%; aspect-ratio:4/3; background:#f0f2f5;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; color:#bbb; }
+    .no-img-box i { font-size:2.5rem; margin-bottom:6px; }
+    .no-img-box span { font-size:0.8rem; }
+  </style>
 </head>
 <body class="portfolio-details-page">
 
@@ -66,10 +72,8 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
           <%
           if (listPortfolio != null) {
               for (PortfolioModel p : listPortfolio) {
-                  String thumbSrc = request.getContextPath() + "/img/no_image.png";
-                  if (p.getImages() != null && !p.getImages().isEmpty()) {
-                      thumbSrc = request.getContextPath() + "/" + p.getImages().get(0).getImagePath();
-                  }
+                  boolean hasImage = p.getImages() != null && !p.getImages().isEmpty();
+                  String thumbSrc = hasImage ? request.getContextPath() + "/" + p.getImages().get(0).getImagePath() : "";
                   String cat = p.getCategory() != null ? p.getCategory() : "AI";
                   String filterClass = "filter-app";
                   if ("Data".equals(cat))            filterClass = "filter-product";
@@ -79,7 +83,17 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
             <div class="col-lg-4 col-md-6 portfolio-item isotope-item <%=filterClass%>">
               <div class="portfolio-content h-100"
                    onclick="location.href='main.windy?menu=portfolio_detail&portfolioId=<%=p.getPortfolioId()%>'">
-                <img src="<%=thumbSrc%>" class="img-fluid" alt="<%=p.getTitle()%>">
+                <%if (hasImage) {%>
+                <img src="<%=thumbSrc%>" class="img-fluid" alt="<%=p.getTitle()%>"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                <div class="no-img-box" style="display:none;">
+                  <i class="bi bi-image"></i><span>이미지 없음</span>
+                </div>
+                <%} else {%>
+                <div class="no-img-box">
+                  <i class="bi bi-image"></i><span>이미지 없음</span>
+                </div>
+                <%}%>
                 <div class="portfolio-info">
                   <h4><a href="main.windy?menu=portfolio_detail&portfolioId=<%=p.getPortfolioId()%>" title="More Details"><%=p.getTitle()%></a></h4>
                   <%if (p.getSummary() != null && !p.getSummary().isEmpty()) {%>

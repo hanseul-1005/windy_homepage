@@ -39,6 +39,34 @@ Integer[] years = yearMap.keySet().toArray(new Integer[0]);
   <link href="bootstrap_enno/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
   <link href="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
   <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
+  <style>
+    .year-tabs-wrapper { gap: 10px; align-items: center; margin-bottom: 30px; }
+    .year-tabs-wrapper #year-tabs {
+      display: flex !important;
+      border-bottom: none;
+      flex-wrap: nowrap;
+      align-items: center;
+      gap: 10px;
+      margin: 0 !important;
+    }
+    .year-tabs-wrapper #year-tabs .nav-item {
+      display: flex !important;
+      align-items: center;
+      margin-bottom: 0 !important;
+    }
+    .year-tabs-wrapper .nav-link { white-space: nowrap; }
+    .year-nav-btn {
+      display: flex; align-items: center; justify-content: center;
+      width: 44px; height: 44px; border-radius: 50%;
+      color: var(--heading-color, #333);
+      font-size: 28px;
+      flex-shrink: 0;
+      align-self: center;
+    }
+    .year-nav-btn:hover { background-color: rgba(0,0,0,0.05); }
+    .year-nav-btn.disabled { opacity: 0.3; pointer-events: none; }
+    #year-tabs .nav-item.year-hidden { display: none !important; }
+  </style>
 </head>
 <body class="portfolio-details-page">
 
@@ -72,16 +100,20 @@ Integer[] years = yearMap.keySet().toArray(new Integer[0]);
       <%} else {%>
 
         <!-- 연도 탭 -->
-        <ul class="nav nav-tabs" role="tablist" data-aos="fade-up" data-aos-delay="100">
-        <%for (int i = 0; i < years.length; i++) {%>
-          <li class="nav-item" role="presentation">
-            <a class="nav-link <%=i == 0 ? "active" : ""%>"
-               href="#year-<%=years[i]%>" role="tab" data-bs-toggle="tab"
-               aria-selected="<%=i == 0 ? "true" : "false"%>"
-               <%=i > 0 ? "tabindex=\"-1\"" : ""%>><%=years[i]%></a>
-          </li>
-        <%}%>
-        </ul>
+        <div class="d-flex align-items-center justify-content-center year-tabs-wrapper" data-aos="fade-up" data-aos-delay="100">
+          <a href="#" id="year-prev" class="year-nav-btn"><i class="bi bi-chevron-left"></i></a>
+          <ul class="nav nav-tabs flex-nowrap" id="year-tabs" role="tablist">
+          <%for (int i = 0; i < years.length; i++) {%>
+            <li class="nav-item year-tab-item" role="presentation" data-index="<%=i%>">
+              <a class="nav-link <%=i == 0 ? "active" : ""%>"
+                 href="#year-<%=years[i]%>" role="tab" data-bs-toggle="tab"
+                 aria-selected="<%=i == 0 ? "true" : "false"%>"
+                 <%=i > 0 ? "tabindex=\"-1\"" : ""%>><%=years[i]%></a>
+            </li>
+          <%}%>
+          </ul>
+          <a href="#" id="year-next" class="year-nav-btn"><i class="bi bi-chevron-right"></i></a>
+        </div>
 
         <div class="tab-content row justify-content-center" data-aos="fade-up" data-aos-delay="200">
         <%for (int i = 0; i < years.length; i++) {
@@ -126,6 +158,52 @@ Integer[] years = yearMap.keySet().toArray(new Integer[0]);
   <script src="bootstrap_enno/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
   <script src="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.js"></script>
   <script src="bootstrap_enno/assets/js/main.js"></script>
+
+  <script>
+  (function() {
+    var PAGE_SIZE = 4;
+    var items = Array.prototype.slice.call(document.querySelectorAll('#year-tabs .year-tab-item'));
+    var total = items.length;
+    if (total === 0) return;
+
+    var pageCount = Math.ceil(total / PAGE_SIZE);
+
+    // 현재 활성 탭이 포함된 페이지를 초기 페이지로 설정
+    var activeIndex = 0;
+    items.forEach(function(item, idx) {
+      if (item.querySelector('.nav-link.active')) activeIndex = idx;
+    });
+    var currentPage = Math.floor(activeIndex / PAGE_SIZE);
+
+    var prevBtn = document.getElementById('year-prev');
+    var nextBtn = document.getElementById('year-next');
+
+    function render() {
+      var start = currentPage * PAGE_SIZE;
+      var end = start + PAGE_SIZE;
+      items.forEach(function(item, idx) {
+        if (idx >= start && idx < end) {
+          item.classList.remove('year-hidden');
+        } else {
+          item.classList.add('year-hidden');
+        }
+      });
+      prevBtn.classList.toggle('disabled', currentPage === 0);
+      nextBtn.classList.toggle('disabled', currentPage >= pageCount - 1);
+    }
+
+    prevBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (currentPage > 0) { currentPage--; render(); }
+    });
+    nextBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (currentPage < pageCount - 1) { currentPage++; render(); }
+    });
+
+    render();
+  })();
+  </script>
 
 </body>
 </html>

@@ -19,6 +19,7 @@ import javax.servlet.http.Part;
 
 import org.json.simple.JSONObject;
 
+import windy.homepage.dao.BoardDAO;
 import windy.homepage.dao.CertificationDAO;
 import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
@@ -26,6 +27,9 @@ import windy.homepage.dao.NoticeDAO;
 import windy.homepage.dao.PortfolioDAO;
 import windy.homepage.dao.PressDAO;
 import windy.homepage.dao.ProductDAO;
+import windy.homepage.dao.VideoDAO;
+import windy.homepage.model.BoardModel;
+import windy.homepage.model.BoardPostModel;
 import windy.homepage.model.CertificationModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.HistoryModel;
@@ -33,6 +37,7 @@ import windy.homepage.model.NoticeModel;
 import windy.homepage.model.PortfolioModel;
 import windy.homepage.model.PressModel;
 import windy.homepage.model.ProductModel;
+import windy.homepage.model.VideoModel;
 
 @WebServlet(name = "admin", urlPatterns = { "/admin.windy" })
 @MultipartConfig(maxFileSize = 20 * 1024 * 1024, maxRequestSize = 50 * 1024 * 1024)
@@ -58,8 +63,15 @@ public class Admin extends HttpServlet {
         PortfolioDAO       portfolioDAO  = new PortfolioDAO();
         ProductDAO         productDAO    = new ProductDAO();
         PressDAO           pressDAO      = new PressDAO();
+        VideoDAO           videoDAO      = new VideoDAO();
 
         if ("main".equals(menu)) {
+            request.setAttribute("listNotice",    noticeDAO.selectListNotice());
+            request.setAttribute("listContact",   contactDAO.selectListContact());
+            request.setAttribute("listPortfolio", portfolioDAO.selectListPortfolio());
+            request.setAttribute("listProduct",   productDAO.selectListProduct());
+            request.setAttribute("listPress",     pressDAO.selectListPress());
+            request.setAttribute("listVideo",     videoDAO.selectListVideo());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/dash_board.jsp");
             dispatcher.forward(request, response);
 
@@ -171,6 +183,51 @@ public class Admin extends HttpServlet {
             request.setAttribute("press", pressDAO.selectPress(pressId));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/press/press_modify.jsp");
             dispatcher.forward(request, response);
+
+        } else if ("video_list".equals(menu)) {
+            request.setAttribute("listVideo", videoDAO.selectListVideo());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/video/video_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("video_add".equals(menu)) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/video/video_add.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("video_modify".equals(menu)) {
+            int videoId = Integer.parseInt(request.getParameter("videoId"));
+            request.setAttribute("video", videoDAO.selectVideo(videoId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/video/video_modify.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("board_list".equals(menu)) {
+            BoardDAO boardDAO = new BoardDAO();
+            request.setAttribute("listBoard", boardDAO.selectListBoard());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/board/board_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("board_post_list".equals(menu)) {
+            BoardDAO boardDAO = new BoardDAO();
+            int boardId = Integer.parseInt(request.getParameter("boardId"));
+            request.setAttribute("board", boardDAO.selectBoard(boardId));
+            request.setAttribute("listPost", boardDAO.selectListPost(boardId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/board/post_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("board_post_add".equals(menu)) {
+            BoardDAO boardDAO = new BoardDAO();
+            int boardId = Integer.parseInt(request.getParameter("boardId"));
+            request.setAttribute("board", boardDAO.selectBoard(boardId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/board/post_add.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("board_post_modify".equals(menu)) {
+            BoardDAO boardDAO = new BoardDAO();
+            int postId = Integer.parseInt(request.getParameter("postId"));
+            BoardPostModel post = boardDAO.selectPost(postId);
+            request.setAttribute("post", post);
+            request.setAttribute("board", boardDAO.selectBoard(post.getBoardId()));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/board/post_modify.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
@@ -197,6 +254,7 @@ public class Admin extends HttpServlet {
         PortfolioDAO     portfolioDAO = new PortfolioDAO();
         ProductDAO       productDAO   = new ProductDAO();
         PressDAO         pressDAO     = new PressDAO();
+        VideoDAO         videoDAO     = new VideoDAO();
         JSONObject       objResult    = new JSONObject();
 
         if ("notice_add".equals(mode)) {
@@ -509,13 +567,134 @@ public class Admin extends HttpServlet {
             int pressId = Integer.parseInt(request.getParameter("pressId"));
             int result  = pressDAO.deletePress(pressId);
             objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("video_add".equals(mode)) {
+            String title       = request.getParameter("title");
+            String youtubeUrl  = request.getParameter("youtubeUrl");
+            String description = request.getParameter("description");
+
+            VideoModel model = new VideoModel();
+            model.setTitle(title);
+            model.setYoutubeUrl(youtubeUrl != null ? youtubeUrl : "");
+            model.setDescription(description != null ? description : "");
+
+            int result = videoDAO.insertVideo(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("video_update".equals(mode)) {
+            int    videoId     = Integer.parseInt(request.getParameter("videoId"));
+            String title       = request.getParameter("title");
+            String youtubeUrl  = request.getParameter("youtubeUrl");
+            String description = request.getParameter("description");
+
+            VideoModel model = new VideoModel();
+            model.setVideoId(videoId);
+            model.setTitle(title);
+            model.setYoutubeUrl(youtubeUrl != null ? youtubeUrl : "");
+            model.setDescription(description != null ? description : "");
+
+            int result = videoDAO.updateVideo(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("video_delete".equals(mode)) {
+            int videoId = Integer.parseInt(request.getParameter("videoId"));
+            int result  = videoDAO.deleteVideo(videoId);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("board_add".equals(mode)) {
+            BoardDAO boardDAO = new BoardDAO();
+            BoardModel model = new BoardModel();
+            model.setBoardName(request.getParameter("boardName"));
+            model.setMenuGroup(request.getParameter("menuGroup"));
+            model.setBoardType(request.getParameter("boardType"));
+            String orderParam = request.getParameter("displayOrder");
+            model.setDisplayOrder(orderParam != null && !orderParam.trim().isEmpty() ? Integer.parseInt(orderParam) : 0);
+            model.setUseYn("Y".equals(request.getParameter("useYn")) ? "Y" : "N");
+
+            int result = boardDAO.insertBoard(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("board_update".equals(mode)) {
+            BoardDAO boardDAO = new BoardDAO();
+            BoardModel model = new BoardModel();
+            model.setBoardId(Integer.parseInt(request.getParameter("boardId")));
+            model.setBoardName(request.getParameter("boardName"));
+            model.setMenuGroup(request.getParameter("menuGroup"));
+            model.setBoardType(request.getParameter("boardType"));
+            String orderParam = request.getParameter("displayOrder");
+            model.setDisplayOrder(orderParam != null && !orderParam.trim().isEmpty() ? Integer.parseInt(orderParam) : 0);
+            model.setUseYn("Y".equals(request.getParameter("useYn")) ? "Y" : "N");
+
+            int result = boardDAO.updateBoard(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("board_delete".equals(mode)) {
+            BoardDAO boardDAO = new BoardDAO();
+            int boardId = Integer.parseInt(request.getParameter("boardId"));
+            int result  = boardDAO.deleteBoard(boardId);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("board_post_add".equals(mode)) {
+            // POST 용량 초과(maxPostSize) 시 파라미터가 전부 null로 들어옴
+            if (request.getParameter("boardId") == null) {
+                objResult.put("result", "false");
+                objResult.put("msg", "본문 용량이 너무 큽니다. 이미지 크기를 줄여주세요.");
+            } else {
+                BoardDAO boardDAO = new BoardDAO();
+                BoardPostModel model = new BoardPostModel();
+                model.setBoardId(Integer.parseInt(request.getParameter("boardId")));
+                model.setTitle(request.getParameter("title"));
+                model.setContent(request.getParameter("content"));
+
+                int result = boardDAO.insertPost(model);
+                objResult.put("result", result > 0 ? "true" : "false");
+            }
+
+        } else if ("board_post_update".equals(mode)) {
+            if (request.getParameter("postId") == null) {
+                objResult.put("result", "false");
+                objResult.put("msg", "본문 용량이 너무 큽니다. 이미지 크기를 줄여주세요.");
+            } else {
+                BoardDAO boardDAO = new BoardDAO();
+                BoardPostModel model = new BoardPostModel();
+                model.setPostId(Integer.parseInt(request.getParameter("postId")));
+                model.setTitle(request.getParameter("title"));
+                model.setContent(request.getParameter("content"));
+
+                int result = boardDAO.updatePost(model);
+                objResult.put("result", result > 0 ? "true" : "false");
+            }
+
+        } else if ("board_post_delete".equals(mode)) {
+            BoardDAO boardDAO = new BoardDAO();
+            int postId = Integer.parseInt(request.getParameter("postId"));
+            int result = boardDAO.deletePost(postId);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("editor_image_upload".equals(mode)) {
+            // Quill 에디터 이미지 업로드: 파일로 저장 후 URL 반환 (base64 대신)
+            Part imagePart = request.getPart("image");
+            if (imagePart != null && imagePart.getSize() > 0) {
+                String fileName = saveUploadFile(imagePart, "board");
+                if (fileName != null) {
+                    objResult.put("result", "true");
+                    objResult.put("url", "uploads/board/" + fileName);
+                } else {
+                    objResult.put("result", "false");
+                    objResult.put("msg", "이미지 저장에 실패했습니다.");
+                }
+            } else {
+                objResult.put("result", "false");
+                objResult.put("msg", "이미지 파일이 없습니다.");
+            }
         }
 
         PrintWriter out = response.getWriter();
         out.print(objResult);
     }
 
-    private String saveProductImage(Part filePart, HttpServletRequest request) {
+    /** 공통 파일 저장 메서드: uploadBasePath 하위 subDir 에 저장 */
+    private String saveUploadFile(Part filePart, String subDir) {
         try {
             String originalName = filePart.getSubmittedFileName();
             if (originalName == null || originalName.isEmpty()) return null;
@@ -523,7 +702,13 @@ public class Admin extends HttpServlet {
             String ext      = originalName.substring(originalName.lastIndexOf('.'));
             String fileName = UUID.randomUUID().toString() + ext;
 
-            String uploadDir = getServletContext().getRealPath("/uploads/product/");
+            String basePath = (String) getServletContext().getAttribute("uploadBasePath");
+            if (basePath == null) {
+                // fallback: getRealPath (이전 방식)
+                basePath = getServletContext().getRealPath("/uploads/") + File.separator;
+            }
+
+            String uploadDir = basePath + subDir;
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
 
@@ -533,65 +718,21 @@ public class Admin extends HttpServlet {
             e.printStackTrace();
             return null;
         }
+    }
+
+    private String saveProductImage(Part filePart, HttpServletRequest request) {
+        return saveUploadFile(filePart, "product");
     }
 
     private String savePortfolioImage(Part filePart, HttpServletRequest request) {
-        try {
-            String originalName = filePart.getSubmittedFileName();
-            if (originalName == null || originalName.isEmpty()) return null;
-
-            String ext      = originalName.substring(originalName.lastIndexOf('.'));
-            String fileName = UUID.randomUUID().toString() + ext;
-
-            String uploadDir = getServletContext().getRealPath("/uploads/portfolio/");
-            File dir = new File(uploadDir);
-            if (!dir.exists()) dir.mkdirs();
-
-            filePart.write(uploadDir + File.separator + fileName);
-            return fileName;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return saveUploadFile(filePart, "portfolio");
     }
 
     private String savePressImage(Part filePart, HttpServletRequest request) {
-        try {
-            String originalName = filePart.getSubmittedFileName();
-            if (originalName == null || originalName.isEmpty()) return null;
-
-            String ext      = originalName.substring(originalName.lastIndexOf('.'));
-            String fileName = UUID.randomUUID().toString() + ext;
-
-            String uploadDir = getServletContext().getRealPath("/uploads/press/");
-            File dir = new File(uploadDir);
-            if (!dir.exists()) dir.mkdirs();
-
-            filePart.write(uploadDir + File.separator + fileName);
-            return fileName;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return saveUploadFile(filePart, "press");
     }
 
     private String saveFile(Part filePart, HttpServletRequest request) {
-        try {
-            String originalName = filePart.getSubmittedFileName();
-            if (originalName == null || originalName.isEmpty()) return null;
-
-            String ext      = originalName.substring(originalName.lastIndexOf('.'));
-            String fileName = UUID.randomUUID().toString() + ext;
-
-            String uploadDir = getServletContext().getRealPath("/uploads/certification/");
-            File dir = new File(uploadDir);
-            if (!dir.exists()) dir.mkdirs();
-
-            filePart.write(uploadDir + File.separator + fileName);
-            return fileName;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+        return saveUploadFile(filePart, "certification");
     }
 }

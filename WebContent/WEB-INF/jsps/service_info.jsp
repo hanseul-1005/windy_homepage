@@ -32,18 +32,6 @@ String contents = (String) request.getAttribute("contents");
 	
 	 <!-- Main CSS File -->
 	 <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
-<script type="text/javascript">
-
-function goDetail(num) {
-	//var link = document.getElementById('link'+idx).value;
-	//var subject = document.getElementById('subject'+idx).value;
-	//var title = document.getElementById('title'+idx).value;
-	//var contents = document.getElementById('contents'+idx).value;
-	
-	//location.href = "main.windy?menu=detail&link="+link+"&subject="+subject+"&title="+title+"&contents="+contents;
-	location.href = "main.windy?menu=portfolio_detail&num="+num;
-}
-</script>
 </head>
 <body class="portfolio-details-page">
 

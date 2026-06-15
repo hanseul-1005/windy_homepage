@@ -35,6 +35,11 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
       width: 100%;
       object-fit: contain;
     }
+    .no-img-box { width:100%; height:300px; background:#f0f2f5;
+      display:flex; flex-direction:column; align-items:center; justify-content:center; color:#bbb;
+      border-radius:8px; }
+    .no-img-box i { font-size:3rem; margin-bottom:8px; }
+    .no-img-box span { font-size:0.85rem; }
   </style>
 </head>
 <body class="portfolio-details-page">
@@ -91,14 +96,20 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
                   for (PortfolioImageModel img : images) {
               %>
                 <div class="swiper-slide">
-                  <img src="<%=request.getContextPath()%>/<%=img.getImagePath()%>" alt="<%=portfolio.getTitle()%>" class="img-fluid" loading="lazy">
+                  <img src="<%=request.getContextPath()%>/<%=img.getImagePath()%>" alt="<%=portfolio.getTitle()%>" class="img-fluid" loading="lazy"
+                       onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                  <div class="no-img-box" style="display:none;">
+                    <i class="bi bi-image"></i><span>이미지를 불러올 수 없습니다</span>
+                  </div>
                 </div>
               <%
                   }
               } else {
               %>
                 <div class="swiper-slide">
-                  <img src="<%=request.getContextPath()%>/img/no_image.png" alt="" class="img-fluid">
+                  <div class="no-img-box">
+                    <i class="bi bi-image"></i><span>등록된 이미지가 없습니다</span>
+                  </div>
                 </div>
               <%}%>
               </div>

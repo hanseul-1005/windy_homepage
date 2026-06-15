@@ -1,11 +1,13 @@
 <%@page import="windy.homepage.model.PortfolioModel"%>
 <%@page import="windy.homepage.model.PortfolioImageModel"%>
 <%@page import="windy.homepage.model.NoticeModel"%>
+<%@page import="windy.homepage.model.VideoModel"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute("listPortfolio");
 List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute("listNotice");
+List<VideoModel>     listVideo     = (List<VideoModel>)     request.getAttribute("listVideo");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -38,6 +40,23 @@ List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute
 	 <style>
 	   .notice-content { overflow: hidden; font-size: 14px; line-height: 1.7; }
 	   .notice-content p { margin: 0 0 4px 0; }
+	   .video-card { border-radius: 10px; overflow: hidden; cursor: pointer; background: #fff;
+	     box-shadow: 0 2px 12px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; }
+	   .video-card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.15); }
+	   .video-card .video-thumb { position: relative; overflow: hidden; }
+	   .video-card .video-thumb img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; transition: transform 0.3s; }
+	   .video-card:hover .video-thumb img { transform: scale(1.04); }
+	   .video-card .play-btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+	     width: 48px; height: 48px; background: rgba(255,255,255,0.9); border-radius: 50%;
+	     display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: #ff0000; transition: 0.3s; }
+	   .video-card:hover .play-btn { background: #fff; transform: translate(-50%, -50%) scale(1.1); }
+	   .video-card .video-body { padding: 14px 16px 16px; }
+	   .video-card .video-title { font-size: 0.95rem; font-weight: 700; color: #2d2d2d; margin-bottom: 6px;
+	     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; line-height: 1.4; }
+	   .video-card .video-badge { display: inline-block; font-size: 0.72rem; font-weight: 600;
+	     background: #e8f0fe; color: #1a73e8; border-radius: 4px; padding: 2px 8px; margin-bottom: 6px; }
+	   .video-card .video-desc { font-size: 0.8rem; color: #666; line-height: 1.5;
+	     display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 	   .btn-getstarted {
 	     color: var(--contrast-color);
 	     background: var(--heading-color);
@@ -51,19 +70,17 @@ List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute
 	   .btn-getstarted:hover {
 	     background: color-mix(in srgb, var(--accent-color), transparent 15%);
 	   }
+	   /* 포트폴리오 카드 이미지 */
+	   .portfolio-content .thumb-img {
+	     width: 100%; height: 220px; object-fit: cover; display: block;
+	   }
+	   .portfolio-content .no-img-box {
+	     width: 100%; height: 220px; background: #f0f2f5;
+	     display: flex; flex-direction: column; align-items: center; justify-content: center; color: #bbb;
+	   }
+	   .portfolio-content .no-img-box i { font-size: 2.5rem; margin-bottom: 6px; }
+	   .portfolio-content .no-img-box span { font-size: 0.8rem; }
 	 </style>
-<script type="text/javascript">
-
-function goDetail(num) {
-	//var link = document.getElementById('link'+idx).value;
-	//var subject = document.getElementById('subject'+idx).value;
-	//var title = document.getElementById('title'+idx).value;
-	//var contents = document.getElementById('contents'+idx).value;
-	
-	//location.href = "main.windy?menu=detail&link="+link+"&subject="+subject+"&title="+title+"&contents="+contents;
-	location.href = "main.windy?menu=portfolio_detail&num="+num;
-}
-</script>
 
 
 </head>
@@ -122,20 +139,28 @@ function goDetail(num) {
           <%
           if (listPortfolio != null) {
               for (PortfolioModel p : listPortfolio) {
-                  String thumbSrc = request.getContextPath() + "/img/no_image.png";
-                  if (p.getImages() != null && !p.getImages().isEmpty()) {
-                      thumbSrc = request.getContextPath() + "/" + p.getImages().get(0).getImagePath();
-                  }
+                  boolean hasImage = p.getImages() != null && !p.getImages().isEmpty();
+                  String thumbSrc = hasImage ? request.getContextPath() + "/" + p.getImages().get(0).getImagePath() : "";
                   String cat = p.getCategory() != null ? p.getCategory() : "AI";
                   String filterClass = "filter-app";
-                  if ("Data".equals(cat))       filterClass = "filter-product";
-                  else if ("Vision".equals(cat)) filterClass = "filter-branding";
+                  if ("Data".equals(cat))            filterClass = "filter-product";
+                  else if ("Vision".equals(cat))     filterClass = "filter-branding";
                   else if ("Monitoring".equals(cat)) filterClass = "filter-books";
           %>
             <div class="col-lg-4 col-md-6 portfolio-item isotope-item <%=filterClass%>">
               <div class="portfolio-content h-100"
                    onclick="location.href='main.windy?menu=portfolio_detail&portfolioId=<%=p.getPortfolioId()%>'">
-                <img src="<%=thumbSrc%>" class="img-fluid" alt="<%=p.getTitle()%>">
+                <%if (hasImage) {%>
+                <img src="<%=thumbSrc%>" class="thumb-img" alt="<%=p.getTitle()%>"
+                     onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                <div class="no-img-box" style="display:none;">
+                  <i class="bi bi-image"></i><span>이미지 없음</span>
+                </div>
+                <%} else {%>
+                <div class="no-img-box">
+                  <i class="bi bi-image"></i><span>이미지 없음</span>
+                </div>
+                <%}%>
                 <div class="portfolio-info">
                   <h4><a href="main.windy?menu=portfolio_detail&portfolioId=<%=p.getPortfolioId()%>" title="More Details"><%=p.getTitle()%></a></h4>
                   <%if (p.getSummary() != null && !p.getSummary().isEmpty()) {%>
@@ -253,6 +278,93 @@ function goDetail(num) {
       </div>
 
     </section><!-- /Services Section -->
+
+    <!-- Video Section -->
+    <%if (listVideo != null && !listVideo.isEmpty()) {%>
+    <section id="video" class="section light-background">
+
+      <div class="container section-title" data-aos="fade-up">
+        <span>Video</span>
+        <h2>Video</h2>
+      </div>
+
+      <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="row gy-4">
+        <%
+        for (VideoModel v : listVideo) {
+          String ytUrl = v.getYoutubeUrl();
+          String ytId  = null;
+          if (ytUrl != null && !ytUrl.isEmpty()) {
+            if (ytUrl.contains("youtu.be/")) {
+              int idx = ytUrl.indexOf("youtu.be/") + 9;
+              String id = ytUrl.substring(idx);
+              if (id.contains("?")) id = id.substring(0, id.indexOf("?"));
+              if (id.contains("&")) id = id.substring(0, id.indexOf("&"));
+              if (!id.isEmpty()) ytId = id;
+            } else if (ytUrl.contains("/shorts/")) {
+              int idx = ytUrl.indexOf("/shorts/") + 8;
+              String id = ytUrl.substring(idx);
+              if (id.contains("?")) id = id.substring(0, id.indexOf("?"));
+              if (id.contains("&")) id = id.substring(0, id.indexOf("&"));
+              if (!id.isEmpty()) ytId = id;
+            } else if (ytUrl.contains("v=")) {
+              int idx = ytUrl.indexOf("v=") + 2;
+              String id = ytUrl.substring(idx);
+              if (id.contains("&")) id = id.substring(0, id.indexOf("&"));
+              if (!id.isEmpty()) ytId = id;
+            } else if (ytUrl.contains("embed/")) {
+              int idx = ytUrl.indexOf("embed/") + 6;
+              String id = ytUrl.substring(idx);
+              if (id.contains("?")) id = id.substring(0, id.indexOf("?"));
+              if (!id.isEmpty()) ytId = id;
+            }
+          }
+          String thumbUrl = ytId != null ? "https://img.youtube.com/vi/" + ytId + "/mqdefault.jpg" : "";
+          String embedUrl = ytId != null ? "https://www.youtube.com/watch?v=" + ytId : (ytUrl != null ? ytUrl : "#");
+        %>
+          <div class="col-lg-4 col-md-6" data-aos="fade-up">
+            <div class="video-card" onclick="openVideoModal('<%=ytId != null ? ytId : ""%>', '<%=v.getTitle().replace("'", "\\'")%>')">
+              <div class="video-thumb">
+                <%if (!thumbUrl.isEmpty()) {%>
+                  <img src="<%=thumbUrl%>" alt="<%=v.getTitle()%>">
+                <%} else {%>
+                  <div style="width:100%;aspect-ratio:16/9;background:#1a1a1a;"></div>
+                <%}%>
+                <div class="play-btn"><i class="bi bi-play-fill"></i></div>
+              </div>
+              <div class="video-body">
+                <div class="video-title"><%=v.getTitle()%></div>
+                <span class="video-badge"><i class="bi bi-youtube me-1"></i>YouTube</span>
+                <%if (v.getDescription() != null && !v.getDescription().isEmpty()) {%>
+                <div class="video-desc"><%=v.getDescription()%></div>
+                <%}%>
+              </div>
+            </div>
+          </div>
+        <%}%>
+        </div>
+      </div>
+
+    </section><!-- /Video Section -->
+
+    <!-- Video Modal -->
+    <div class="modal fade" id="videoModal" tabindex="-1" aria-hidden="true">
+      <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="background:#000; border:none; border-radius:10px; overflow:hidden;">
+          <div class="modal-header" style="border:none; padding:10px 14px 6px;">
+            <h6 class="modal-title text-white" id="videoModalTitle" style="font-size:0.95rem;"></h6>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body p-0">
+            <div style="position:relative; padding-bottom:56.25%; height:0;">
+              <iframe id="videoModalFrame" src="" allowfullscreen
+                style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;"></iframe>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <%}%>
 
     <!-- Faq 2 Section -->
     <section id="faq-2" class="faq-2 section">
@@ -405,6 +517,22 @@ function goDetail(num) {
   <!-- Main JS File -->
   <script src="bootstrap_enno/assets/js/main.js"></script>
   <script>
+  function openVideoModal(ytId, title) {
+    if (!ytId) return;
+    var modalEl = document.getElementById('videoModal');
+    if (!modalEl) return;
+    $('#videoModalTitle').text(title);
+    $('#videoModalFrame').attr('src', 'https://www.youtube.com/embed/' + ytId + '?autoplay=1');
+    new bootstrap.Modal(modalEl).show();
+  }
+
+  var _videoModalEl = document.getElementById('videoModal');
+  if (_videoModalEl) {
+    _videoModalEl.addEventListener('hidden.bs.modal', function() {
+      $('#videoModalFrame').attr('src', '');
+    });
+  }
+
   function goContact() {
     var name    = $('#contactName').val().trim();
     var email   = $('#contactEmail').val().trim();

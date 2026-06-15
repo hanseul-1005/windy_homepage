@@ -4,10 +4,12 @@
   <header id="header" class="header fixed-top d-flex align-items-center">
 
     <div class="d-flex align-items-center justify-content-between">
-      <a href="index.html" class="logo d-flex align-items-center">
-        <img src="img/img_logo.png" alt="" style="max-height: 35px; margin: 6px;"/>
+      <!-- 데스크탑: 로고 표시 -->
+      <a href="admin.windy?menu=main" class="logo d-none d-lg-flex align-items-center">
+        <img src="img/img_logo.png" alt="admin.windy?menu=main" style="max-height: 35px; margin: 6px;"/>
       </a>
-      <!-- <i class="bi bi-list toggle-sidebar-btn"></i> -->
+      <!-- 모바일: 햄버거 버튼 표시 -->
+      <i class="bi bi-list toggle-sidebar-btn d-lg-none" style="font-size: 32px; padding-left: 10px; cursor: pointer;"></i>
     </div><!-- End Logo -->
 
     <nav class="header-nav ms-auto">

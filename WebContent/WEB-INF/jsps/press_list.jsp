@@ -44,11 +44,11 @@ List<PressModel> listPress = (List<PressModel>) request.getAttribute("listPress"
 
     <div class="page-title">
       <div class="container d-lg-flex justify-content-between align-items-center">
-        <h1 class="mb-2 mb-lg-0">언론보도</h1>
+        <h1 class="mb-2 mb-lg-0">News</h1>
         <nav class="breadcrumbs">
           <ol>
             <li><a href="main.windy">Home</a></li>
-            <li class="current">언론보도</li>
+            <li class="current">News</li>
           </ol>
         </nav>
       </div>
@@ -58,7 +58,7 @@ List<PressModel> listPress = (List<PressModel>) request.getAttribute("listPress"
 
       <div class="container section-title" data-aos="fade-up">
         <span>Press</span>
-        <h2>언론보도</h2>
+        <h2>News</h2>
       </div>
 
       <div class="container" data-aos="fade-up" data-aos-delay="100">

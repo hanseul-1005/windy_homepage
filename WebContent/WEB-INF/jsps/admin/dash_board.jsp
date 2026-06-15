@@ -1,384 +1,313 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<%@page import="windy.homepage.model.PressModel"%>
+<%@page import="windy.homepage.model.ProductModel"%>
+<%@page import="windy.homepage.model.PortfolioModel"%>
+<%@page import="windy.homepage.model.PortfolioImageModel"%>
+<%@page import="windy.homepage.model.NoticeModel"%>
+<%@page import="windy.homepage.model.ContactModel"%>
+<%@page import="windy.homepage.model.VideoModel"%>
+<%@page import="java.util.List"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute("listNotice");
+List<ContactModel>   listContact   = (List<ContactModel>)   request.getAttribute("listContact");
+List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute("listPortfolio");
+List<ProductModel>   listProduct   = (List<ProductModel>)   request.getAttribute("listProduct");
+List<PressModel>     listPress     = (List<PressModel>)     request.getAttribute("listPress");
+List<VideoModel>     listVideo     = (List<VideoModel>)     request.getAttribute("listVideo");
+
+int cntPortfolio = (listPortfolio != null) ? listPortfolio.size() : 0;
+int cntProduct   = (listProduct   != null) ? listProduct.size()   : 0;
+int cntPress     = (listPress     != null) ? listPress.size()     : 0;
+int cntNotice    = (listNotice    != null) ? listNotice.size()    : 0;
+int cntContact   = (listContact   != null) ? listContact.size()   : 0;
+int cntVideo     = (listVideo     != null) ? listVideo.size()     : 0;
+%>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
   <title>윈디 관리자 페이지</title>
-  <meta content="" name="description">
-  <meta content="" name="keywords">
-
-  <!-- Favicons -->
-  <link href="bootstrap_nice/assets/img/favicon.png" rel="icon">
-  <link href="bootstrap_nice/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
-
-  <!-- Google Fonts -->
+  <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
-
-  <!-- Vendor CSS Files -->
   <link href="bootstrap_nice/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
-  <link href="bootstrap_nice/assets/vendor/quill/quill.snow.css" rel="stylesheet">
-  <link href="bootstrap_nice/assets/vendor/quill/quill.bubble.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/remixicon/remixicon.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/simple-datatables/style.css" rel="stylesheet">
-
-  <!-- Template Main CSS File -->
   <link href="bootstrap_nice/assets/css/style.css" rel="stylesheet">
-
-  <!-- =======================================================
-  * Template Name: NiceAdmin
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Updated: Apr 20 2024 with Bootstrap v5.3.3
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
-  
-  
-  
-<style type="text/css">
-
-.table td, th {
-	text-align: center;
-}
-
-</style>
-<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
-<script type="text/javascript">
-
-function goLogin() {
-	var id = document.getElementById('id').value;
-	var pw = document.getElementById('pw').value;
-	
-	console.log('id : '+id);
-	console.log('pw : '+pw);
-	
-	var param = "&id="+id+"&passwd="+pw;
-	
-	$.ajax({
-		type: "POST",
-		url: "login.windy?mode=login", 
-		data: param,
-		error: ajaxFailed,
-		success: function(ret) {
-			console.log('ret : '+ret);
-			console.log('result : '+ret.result);
-			if(ret.result=='true') {
-				location.href='main.windy?menu=main';
-			} else {
-				alert('아이디 혹은 비밀번호가 일치하지않습니다.\n다시 시도해주세요.');
-			}
-		}
-	});
-}
-function ajaxFailed(xmlRequest)	{
-	alert(xmlRequest.status+"\n\r"+xmlRequest.statusText+"\n\r"+xmlRequest.responseText);
-}
-
-</script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    .dashboard-count-card { border-left: 4px solid; border-radius: 6px; }
+    .dashboard-count-card .card-body { padding: 5px 10px !important; }
+    .dashboard-count-card .count-num { font-size: 0.95rem; font-weight: 700; line-height: 1.2; }
+    .dashboard-count-card .count-label { font-size: 0.65rem; color: #6c757d; line-height: 1.2; }
+    .portfolio-thumb { width: 100%; height: 140px; object-fit: cover; border-radius: 4px 4px 0 0; }
+    .portfolio-thumb-placeholder { width: 100%; height: 140px; background: #f0f0f0; display: flex;
+      align-items: center; justify-content: center; border-radius: 4px 4px 0 0; color: #aaa; font-size: 2rem; }
+    .portfolio-card-title { font-size: 0.9rem; font-weight: 600; white-space: nowrap;
+      overflow: hidden; text-overflow: ellipsis; }
+    .portfolio-card-summary { font-size: 0.78rem; color: #666; display: -webkit-box;
+      -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .section-link { font-size: 0.82rem; float: right; margin-top: -2px; }
+    table td, table th { text-align: center; vertical-align: middle; }
+    .table td.text-start { text-align: left; }
+  </style>
 </head>
-
 <body>
-			<jsp:include page="top_menu.jsp"></jsp:include>
-			<jsp:include page="side_menu.jsp"></jsp:include>
-<!-- 
-  ======= Sidebar =======
-  <aside id="sidebar" class="sidebar">
+  <jsp:include page="top_menu.jsp"/>
+  <jsp:include page="side_menu.jsp"/>
 
-    <ul class="sidebar-nav" id="sidebar-nav">
-
-      <li class="nav-item">
-        <a class="nav-link " href="index.html">
-          <i class="bi bi-grid"></i>
-          <span>대시보드</span>
-        </a>
-      </li>End Dashboard Nav
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="users-profile.html">
-          <i class="bi bi-journal-text"></i>
-          <span>포트폴리오 관리</span>
-        </a>
-      </li>End Profile Page Nav
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="admin.windy?menu=notice_list">
-          <i class="bi bi-layout-text-window-reverse"></i>
-          <span>공지사항 관리</span>
-        </a>
-      </li>End F.A.Q Page Nav
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="pages-contact.html">
-          <i class="bi bi-envelope"></i>
-          <span>Contact Us 관리</span>
-        </a>
-      </li>End Contact Page Nav
-
-    </ul>
-
-  </aside>End Sidebar
- -->
   <main id="main" class="main">
-
     <div class="pagetitle">
-      <h1>대시보드</h1>
+      <h1>Dashboard</h1>
       <nav>
         <ol class="breadcrumb">
-          <!-- <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-          <li class="breadcrumb-item active">Dashboard</li> -->
+          <li class="breadcrumb-item active">Dashboard</li>
         </ol>
       </nav>
-    </div><!-- End Page Title -->
-
-    <section class="section dashboard">
-      <div class="row">
-
-        <!-- Left side columns -->
-        <div class="col-lg-12">
-          <div class="row">
-
-            
-            
-            <!-- Top Selling -->
-            <div class="col-12">
-              <div class="card top-selling overflow-auto">
-
-                <div class="filter">
-                  <!-- <a class="icon" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i></a>
-                  <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
-                    <li class="dropdown-header text-start">
-                      <h6>Filter</h6>
-                    </li>
-
-                    <li><a class="dropdown-item" href="#">Today</a></li>
-                    <li><a class="dropdown-item" href="#">This Month</a></li>
-                    <li><a class="dropdown-item" href="#">This Year</a></li>
-                  </ul> -->
-                </div>
-
-                <div class="card-body pb-0">
-                  <h5 class="card-title">포트폴리오 <span>| All</span></h5>
-					<div style="display: flex;">
-						<!-- AI -->
-						
-						<div class="col-lg-2" style="margin: 5px;">
-							<!-- Card with an image on top -->
-					        <div class="card">
-					            <img src="img/ai/ai1.png" class="card-img-top" alt="..." style="max-height: 220px;">
-					            <div class="card-body">
-					              <h5 class="card-title">객체 추적 기반 교차로 사고 예방 시스템</h5>
-					              <p class="card-text">동일 객체 인식, 이동 방향 지정 등을 통해 교차로 상황에 맞춘 정확한 위험 상황 감지 후 알림.</p>
-					            </div>
-					          </div><!-- End Card with an image on top -->
-				        </div>
-						
-						<div class="col-lg-2" style="margin: 5px;">
-							<!-- Card with an image on top -->
-					        <div class="card">
-					            <img src="img/ai/ai2.png" class="card-img-top" alt="..." style="max-height: 220px;">
-					            <div class="card-body">
-					              <h5 class="card-title">멀티 바코드 인식 시스템</h5>
-					              <p class="card-text">인공지능 기반 객체 인식 알고리즘을 이용하여 웹캠에서 획득한 다수의 바코드를 인식하여 생산 및 물류 이력 관리.</p>
-					            </div>
-					          </div><!-- End Card with an image on top -->
-				        </div>
-						
-						<div class="col-lg-2" style="margin: 5px;">
-							<!-- Card with an image on top -->
-					        <div class="card">
-					            <img src="img/ai/ai3.png" class="card-img-top" alt="..." style="max-height: 220px;">
-					            <div class="card-body">
-					              <h5 class="card-title">지능형 독거 노인 케어 시스템</h5>
-					              <p class="card-text">IoT 기반 스마트 약 디스펜서와 라즈베리 파이를 일원화하여 낙상 관리 및 약 복용, 낙상에 대한 신속 응급 대응이 가능한 시스템.</p>
-					            </div>
-					          </div><!-- End Card with an image on top -->
-				        </div>
-						
-						<!-- End AI -->
-						
-						
-				        <!-- Data -->
-						
-						<div class="col-lg-2" style="margin: 5px;">
-							<!-- Card with an image on top -->
-					        <div class="card">
-					            <img src="img/data/data1.png" class="card-img-top" alt="..." style="max-height: 220px;">
-					            <div class="card-body">
-					              <h5 class="card-title">지하차도 침수 예측용 인공지능 모델 개발을 위한 데이터 취득 시스템 구축</h5>
-					              <p class="card-text">새로운 기후 현상에 대응 가능한 지하차도 및 지하차도 주변 위험지역에 인공지능 기반 실시간 모니터링 시스템 구축.</p>
-					            </div>
-					          </div><!-- End Card with an image on top -->
-				        </div>
-						
-						
-						<div class="col-lg-2" style="margin: 5px;">
-							<!-- Card with an image on top -->
-					        <div class="card">
-					            <img src="img/data/data2.png" class="card-img-top" alt="..." style="max-height: 220px;">
-					            <div class="card-body">
-					              <h5 class="card-title">생산이력관리, 키오스크, 관제 시스템</h5>
-					              <p class="card-text">각종 센서들을 이용하여 환경 정보 획득 및 이를 서버 데이터 베이스에서 관리<br/>
-										획득한 데이터를 기반으로 관제 시스템 개발.
-									</p>
-					            </div>
-					          </div><!-- End Card with an image on top -->
-				        </div>
-						
-						
-						<div class="col-lg-2" style="margin: 5px;">
-							<!-- Card with an image on top -->
-					        <div class="card">
-					            <img src="img/data/data3.png" class="card-img-top" alt="..." style="max-height: 220px;">
-					            <div class="card-body">
-					              <h5 class="card-title">의료 차량 정보 관리 시스템, LTE기반 데이터 획득 시스템</h5>
-					              <p class="card-text">
-					              	차량, 병원, 병리 정보 등 다양한 종류의 데이터 관리<br/>
-									LTE 기반 데이터 획득 시스템을 기반으로 전국 어디에서나 데이터 획득 가능<br/>
-									웹페이지를 이용한 실시간 관제 시스템
-					              </p>
-					            </div>
-					          </div><!-- End Card with an image on top -->
-				        </div>
-						
-				        <!-- End Data -->
-					</div>
-					          
-             	
-
-                </div>
-
-              </div>
-            </div><!-- End Top Selling -->
-
-          </div>
-        </div><!-- End Left side columns -->
-
-        <!-- Left side columns -->
-        <div class="col-lg-6" style="min-height: 500px;">
-
-          <div class="card" style="height: 100%">
-            <div class="card-body">
-              <h5 class="card-title">공지사항</h5>
-
-              <!-- Default Table -->
-              <table class="table">
-              	<colgroup>
-              		<col width="10%"/>
-              		<col width="40%"/>
-              		<col width="10%"/>
-              		<col width="20%"/>
-              		<col width="20%"/>
-              	</colgroup>
-                <thead>
-                  <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">제목</th>
-                    <th scope="col">조회수</th>
-                    <th scope="col">작성일</th>
-                    <th scope="col">수정일</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>4월 1일자 홈페이지 개편</td>
-                    <td>28</td>
-                    <td>2025-03-21</td>
-                    <td>2025-03-31</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>홈페이지 개발 관련 개발 문의 시 지침 사항</td>
-                    <td>45</td>
-                    <td>2025-03-25</td>
-                    <td>-</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">3</th>
-                    <td>AI와 Data 관련 개발 문의 시 지침 사항</td>
-                    <td>45</td>
-                    <td>2025-03-26</td>
-                    <td>-</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">4</th>
-                    <td>키오스크 관련 개발 문의 시 지침 사항</td>
-                    <td>34</td>
-                    <td>2025-03-27</td>
-                    <td>-</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">5</th>
-                    <td>인공지능 관련 개발 문의 시 지침 사항</td>
-                    <td>34</td>
-                    <td>2025-03-28</td>
-                    <td>-</td>
-                  </tr>
-                </tbody>
-              </table>
-              <!-- End Default Table Example -->
-            </div>
-          </div>
-
-        </div><!-- End Right side columns -->
-<!-- Right side columns -->
-        <div class="col-lg-6" style="min-height: 500px;">
-
-          <div class="card" style="height: 100%">
-            <div class="card-body">
-              <h5 class="card-title">Contact Us</h5>
-
-              <!-- Default Table -->
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th scope="col">No</th>
-                    <th scope="col">제목</th>
-                    <th scope="col">작성자</th>
-                    <th scope="col">작성자 이메일</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th scope="row">1</th>
-                    <td>홈페이지 제작 관련 문의 드립니다.</td>
-                    <td>김영희</td>
-                    <td>abc@gmail.com</td>
-                  </tr>
-                  <tr>
-                    <th scope="row">2</th>
-                    <td>인공지능 관련 개발이 가능한지 문의 드립니다.</td>
-                    <td>홍길동</td>
-                    <td>aaa@naver.com</td>
-                  </tr>
-                </tbody>
-              </table>
-              <!-- End Default Table Example -->
-            </div>
-          </div>
-
-        </div><!-- End Right side columns -->
-
-      </div>
-    </section>
-
-  </main><!-- End #main -->
-
-  <!-- ======= Footer ======= -->
-  <footer id="footer" class="footer">
-    <div class="copyright">
-      &copy; Copyright <strong><span>NiceAdmin</span></strong>. All Rights Reserved
     </div>
 
-  </footer><!-- End Footer -->
+    <section class="section dashboard">
 
+      <!-- ===== 건수 카드 ===== -->
+      <div class="row g-3 mb-4">
+
+        <div class="col-xl col-md-4 col-6">
+          <div class="card dashboard-count-card h-100 border-start border-primary border-4 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-1 py-1">
+              <div class="text-primary" style="font-size:0.95rem;"><i class="bi bi-collection"></i></div>
+              <div>
+                <div class="count-num text-primary"><%=cntPortfolio%></div>
+                <div class="count-label">Portfolio</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+          <div class="card dashboard-count-card h-100 border-start border-success border-4 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-1 py-1">
+              <div class="text-success" style="font-size:0.95rem;"><i class="bi bi-box-seam"></i></div>
+              <div>
+                <div class="count-num text-success"><%=cntProduct%></div>
+                <div class="count-label">Product</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+          <div class="card dashboard-count-card h-100 border-start border-warning border-4 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-1 py-1">
+              <div class="text-warning" style="font-size:0.95rem;"><i class="bi bi-newspaper"></i></div>
+              <div>
+                <div class="count-num text-warning"><%=cntPress%></div>
+                <div class="count-label">News</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+          <div class="card dashboard-count-card h-100 border-start border-info border-4 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-1 py-1">
+              <div class="text-info" style="font-size:0.95rem;"><i class="bi bi-megaphone"></i></div>
+              <div>
+                <div class="count-num text-info"><%=cntNotice%></div>
+                <div class="count-label">Notice</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+          <div class="card dashboard-count-card h-100 border-start border-danger border-4 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-1 py-1">
+              <div class="text-danger" style="font-size:0.95rem;"><i class="bi bi-youtube"></i></div>
+              <div>
+                <div class="count-num text-danger"><%=cntVideo%></div>
+                <div class="count-label">Video</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-xl col-md-4 col-6">
+          <div class="card dashboard-count-card h-100 border-start border-secondary border-4 shadow-sm">
+            <div class="card-body d-flex align-items-center gap-1 py-1">
+              <div class="text-secondary" style="font-size:0.95rem;"><i class="bi bi-envelope"></i></div>
+              <div>
+                <div class="count-num text-secondary"><%=cntContact%></div>
+                <div class="count-label">Contact Us</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- ===== End 건수 카드 ===== -->
+
+      <!-- ===== 포트폴리오 ===== -->
+      <div class="row mb-1">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-body">
+              <h5 class="card-title">
+                Portfolio
+                <a href="admin.windy?menu=portfolio_list" class="section-link text-primary">전체보기 →</a>
+              </h5>
+              <div class="row row-cols-2 row-cols-md-4 row-cols-xl-6 g-2">
+              <%
+              if (listPortfolio != null && !listPortfolio.isEmpty()) {
+                for (PortfolioModel p : listPortfolio) {
+                  String firstImg = null;
+                  if (p.getImages() != null && !p.getImages().isEmpty()) {
+                    firstImg = p.getImages().get(0).getImagePath();
+                  }
+              %>
+                <div class="col">
+                  <div class="card h-100 border shadow-none" style="cursor:pointer;"
+                       onclick="location.href='admin.windy?menu=portfolio_modify&portfolioId=<%=p.getPortfolioId()%>'">
+                    <%if (firstImg != null && !firstImg.isEmpty()) {%>
+                      <img src="<%=request.getContextPath()%>/<%=firstImg%>" class="portfolio-thumb" alt="">
+                    <%} else {%>
+                      <div class="portfolio-thumb-placeholder"><i class="bi bi-image"></i></div>
+                    <%}%>
+                    <div class="card-body p-2">
+                      <div class="portfolio-card-title" title="<%=p.getTitle()%>"><%=p.getTitle()%></div>
+                      <div class="mt-1"><span class="badge bg-secondary" style="font-size:0.7rem;"><%=p.getCategory()%></span></div>
+                      <%if (p.getSummary() != null && !p.getSummary().isEmpty()) {%>
+                      <div class="portfolio-card-summary mt-1"><%=p.getSummary()%></div>
+                      <%}%>
+                    </div>
+                  </div>
+                </div>
+              <%
+                }
+              } else {
+              %>
+                <div class="col-12 text-center text-muted py-4">등록된 포트폴리오가 없습니다.</div>
+              <%}%>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- ===== End 포트폴리오 ===== -->
+
+      <!-- ===== 공지사항 + Contact Us ===== -->
+      <div class="row g-3">
+
+        <!-- 공지사항 -->
+        <div class="col-lg-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">
+                Notice
+                <a href="admin.windy?menu=notice_list" class="section-link text-primary">전체보기 →</a>
+              </h5>
+              <table class="table table-hover table-sm mb-0">
+                <colgroup>
+                  <col width="8%">
+                  <col>
+                  <col width="22%">
+                </colgroup>
+                <thead class="table-light">
+                  <tr>
+                    <th>No</th>
+                    <th>제목</th>
+                    <th>작성일</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <%
+                if (listNotice != null && !listNotice.isEmpty()) {
+                  int max = Math.min(5, listNotice.size());
+                  for (int i = 0; i < max; i++) {
+                    NoticeModel n = listNotice.get(i);
+                    String createdDate = (n.getCreatedAt() != null && n.getCreatedAt().length() >= 10)
+                                        ? n.getCreatedAt().substring(0, 10) : n.getCreatedAt();
+                %>
+                  <tr style="cursor:pointer;" onclick="location.href='admin.windy?menu=notice_modify&noticeId=<%=n.getNoticeId()%>'">
+                    <td><%=i + 1%></td>
+                    <td class="text-start"><%=n.getTitle()%></td>
+                    <td><%=createdDate%></td>
+                  </tr>
+                <%
+                  }
+                } else {
+                %>
+                  <tr><td colspan="3" class="text-muted">등록된 공지사항이 없습니다.</td></tr>
+                <%}%>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Us -->
+        <div class="col-lg-6">
+          <div class="card shadow-sm h-100">
+            <div class="card-body">
+              <h5 class="card-title">
+                Contact Us
+                <a href="admin.windy?menu=contact_list" class="section-link text-primary">전체보기 →</a>
+              </h5>
+              <table class="table table-hover table-sm mb-0">
+                <colgroup>
+                  <col width="8%">
+                  <col>
+                  <col width="20%">
+                  <col width="22%">
+                </colgroup>
+                <thead class="table-light">
+                  <tr>
+                    <th>No</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <%
+                if (listContact != null && !listContact.isEmpty()) {
+                  int max = Math.min(5, listContact.size());
+                  for (int i = 0; i < max; i++) {
+                    ContactModel c = listContact.get(i);
+                    String createdDate = (c.getCreatedAt() != null && c.getCreatedAt().length() >= 10)
+                                        ? c.getCreatedAt().substring(0, 10) : c.getCreatedAt();
+                %>
+                  <tr style="cursor:pointer;" onclick="location.href='admin.windy?menu=contact_detail&contactId=<%=c.getContactId()%>'">
+                    <td><%=i + 1%></td>
+                    <td class="text-start"><%=c.getSubject()%></td>
+                    <td><%=c.getName()%></td>
+                    <td><%=createdDate%></td>
+                  </tr>
+                <%
+                  }
+                } else {
+                %>
+                  <tr><td colspan="4" class="text-muted">등록된 문의가 없습니다.</td></tr>
+                <%}%>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- ===== End 공지사항 + Contact Us ===== -->
+
+    </section>
+  </main>
+
+  <footer id="footer" class="footer">
+    <div class="copyright">&copy; Copyright <strong><span>Windy</span></strong>. All Rights Reserved</div>
+  </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-  <!-- Vendor JS Files -->
   <script src="bootstrap_nice/assets/vendor/apexcharts/apexcharts.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/chart.js/chart.umd.js"></script>
@@ -387,9 +316,6 @@ function ajaxFailed(xmlRequest)	{
   <script src="bootstrap_nice/assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="bootstrap_nice/assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/php-email-form/validate.js"></script>
-
-  <!-- Template Main JS File -->
   <script src="bootstrap_nice/assets/js/main.js"></script>
-
 </body>
 </html>

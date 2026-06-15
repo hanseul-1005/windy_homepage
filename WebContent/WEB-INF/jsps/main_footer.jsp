@@ -5,18 +5,16 @@
 
     <div class="container">
       <div class="row gy-3">
-        <div class="col-lg-3 col-md-6 d-flex">
+        <div class="col-lg-3 col-md-6 d-flex" style="border-right: 1px solid rgba(255,255,255,0.15); padding-right: 24px;">
           <i class="bi bi-geo-alt icon"></i>
           <div class="address">
             <h4>주소</h4>
-            <p>광주광역시 북구 첨단과기로208번길 17-11,</p>
-            <p>206호</p>
-            <p></p>
+            <p>광주광역시 북구 첨단과기로208번길 17-11, 206호</p>
           </div>
 
         </div>
 
-        <div class="col-lg-3 col-md-6 d-flex">
+        <div class="col-lg-3 col-md-6 d-flex" style="padding-left: 24px;">
           <i class="bi bi-telephone icon"></i>
           <div>
             <h4>Contact</h4>
@@ -42,9 +40,9 @@
           <h4>Follow Us</h4>
           <div class="social-links d-flex">
             <a href="https://www.instagram.com/windy.sys/?igsh=czh0N2czZXNidWV4#" class="instagram"><i class="bi bi-instagram"></i></a>
-            <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
+            <!-- <a href="#" class="twitter"><i class="bi bi-twitter-x"></i></a>
             <a href="#" class="facebook"><i class="bi bi-facebook"></i></a>
-            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a>
+            <a href="#" class="linkedin"><i class="bi bi-linkedin"></i></a> -->
           </div>
         </div>
 

@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>윈디 관리자 페이지</title>
-  <link href="bootstrap_nice/assets/img/favicon.png" rel="icon">
+  <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
   <link href="https://fonts.gstatic.com" rel="preconnect">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -54,7 +54,7 @@
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1>언론보도 등록</h1>
+      <h1>News 등록</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="admin.windy?menu=press_list">언론보도 목록</a></li>
@@ -119,6 +119,7 @@
   <script src="bootstrap_nice/assets/vendor/chart.js/chart.umd.js"></script>
   <script src="bootstrap_nice/assets/vendor/echarts/echarts.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/quill/quill.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/quill-resize-image@1.0.5/dist/quill-resize-image.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="bootstrap_nice/assets/vendor/tinymce/tinymce.min.js"></script>
   <script src="bootstrap_nice/assets/vendor/php-email-form/validate.js"></script>
@@ -133,9 +134,50 @@
     ['bold', 'italic', 'underline', 'strike'],
     [{ 'color': [] }, { 'background': [] }],
     [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+    ['image'],
     ['clean']
   ];
-  var quill = new Quill('#editor', { theme: 'snow', modules: { toolbar: toolbarOptions } });
+  Quill.register('modules/resize', window.QuillResizeImage);
+
+  // 이미지 버튼: base64 대신 서버 업로드 후 URL 삽입
+  function bindImageUpload(q) {
+    q.getModule('toolbar').addHandler('image', function() {
+      var input = document.createElement('input');
+      input.setAttribute('type', 'file');
+      input.setAttribute('accept', 'image/*');
+      input.click();
+
+      input.onchange = function() {
+        var file = input.files[0];
+        if (!file) return;
+
+        var formData = new FormData();
+        formData.append('image', file);
+
+        $.ajax({
+          type: "POST",
+          url: "admin.windy?mode=editor_image_upload",
+          data: formData,
+          processData: false,
+          contentType: false,
+          dataType: "json",
+          success: function(ret) {
+            if (ret.result === "true") {
+              var range = q.getSelection(true);
+              q.insertEmbed(range.index, 'image', ret.url);
+              q.setSelection(range.index + 1);
+            } else {
+              alert(ret.msg || "이미지 업로드에 실패했습니다.");
+            }
+          },
+          error: function() { alert("이미지 업로드 중 오류가 발생했습니다."); }
+        });
+      };
+    });
+  }
+
+  var quill = new Quill('#editor', { theme: 'snow', modules: { toolbar: toolbarOptions, resize: {} } });
+  bindImageUpload(quill);
 
   var selectedFile = null;
 

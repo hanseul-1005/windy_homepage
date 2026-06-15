@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>윈디 관리자 페이지</title>
-  <link href="bootstrap_nice/assets/img/favicon.png" rel="icon">
+  <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Nunito:300,400,600,700|Poppins:300,400,500,600,700" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -29,7 +29,7 @@
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1>프로덕트 등록</h1>
+      <h1>Product 등록</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item"><a href="admin.windy?menu=product_list">프로덕트 목록</a></li>

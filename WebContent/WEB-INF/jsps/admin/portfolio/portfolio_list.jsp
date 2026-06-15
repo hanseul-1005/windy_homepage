@@ -10,7 +10,7 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>윈디 관리자 페이지</title>
-  <link href="bootstrap_nice/assets/img/favicon.png" rel="icon">
+  <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Nunito:300,400,600,700|Poppins:300,400,500,600,700" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   <link href="bootstrap_nice/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
@@ -28,7 +28,7 @@ List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute
 
   <main id="main" class="main">
     <div class="pagetitle">
-      <h1>포트폴리오 관리</h1>
+      <h1>Portfolio</h1>
       <nav>
         <ol class="breadcrumb">
           <li class="breadcrumb-item active">포트폴리오 목록</li>

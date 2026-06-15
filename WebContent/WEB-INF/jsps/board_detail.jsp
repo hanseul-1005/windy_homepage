@@ -1,7 +1,13 @@
-<%@page import="windy.homepage.model.PressModel"%>
+<%@page import="windy.homepage.model.BoardModel"%>
+<%@page import="windy.homepage.model.BoardPostModel"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-PressModel press = (PressModel) request.getAttribute("press");
+BoardModel board = (BoardModel) request.getAttribute("board");
+BoardPostModel post = (BoardPostModel) request.getAttribute("post");
+
+String boardName = (board != null) ? board.getBoardName() : "게시판";
+int boardId = (board != null) ? board.getBoardId() : -1;
+String parentMenu = (board != null && "technology".equals(board.getMenuGroup())) ? "Technology" : "About";
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -25,12 +31,14 @@ PressModel press = (PressModel) request.getAttribute("press");
   <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <style>
-    .ql-editor { padding: 0; border: none; }
-    .ql-container.ql-snow { border: none; font-size: 15px; }
-    .press-detail-thumb { max-width: 100%; max-height: 400px; object-fit: contain; border-radius: 8px; }
-    .press-meta { border-bottom: 1px solid #e9ecef; padding-bottom: 16px; margin-bottom: 24px; }
-    .press-title { font-size: 24px; font-weight: 700; margin-bottom: 12px; }
-    .btn-back { margin-top: 32px; }
+    .post-header { border-bottom: 2px solid #333; padding-bottom: 16px; margin-bottom: 24px; }
+    .post-header h3 { font-weight: 700; margin-bottom: 10px; }
+    .post-meta { font-size: 13px; color: #999; }
+    .post-meta span + span { margin-left: 16px; }
+    .post-content { font-size: 15px; line-height: 1.8; min-height: 200px; }
+    .post-content img { max-width: 100%; height: auto; }
+    .btn-list { background: #333; color: #fff; padding: 10px 32px; border-radius: 4px; border: none; transition: 0.3s; }
+    .btn-list:hover { background: #555; color: #fff; }
   </style>
 </head>
 <body class="portfolio-details-page">
@@ -41,12 +49,12 @@ PressModel press = (PressModel) request.getAttribute("press");
 
     <div class="page-title">
       <div class="container d-lg-flex justify-content-between align-items-center">
-        <h1 class="mb-2 mb-lg-0">News</h1>
+        <h1 class="mb-2 mb-lg-0"><%=boardName%></h1>
         <nav class="breadcrumbs">
           <ol>
-            <li><a href="main.windy">Home</a></li>
-            <li><a href="main.windy?menu=press_list">News</a></li>
-            <li class="current">상세</li>
+            <li><a href="main.windy"><%=parentMenu%></a></li>
+            <li><a href="main.windy?menu=board&boardId=<%=boardId%>"><%=boardName%></a></li>
+            <li class="current">상세보기</li>
           </ol>
         </nav>
       </div>
@@ -54,45 +62,29 @@ PressModel press = (PressModel) request.getAttribute("press");
 
     <section class="section">
       <div class="container" data-aos="fade-up">
-        <%if (press != null) {%>
 
-          <!-- 제목 + 메타 정보 -->
-          <div class="press-meta">
-            <h2 class="press-title"><%=press.getTitle()%></h2>
-            <div class="d-flex align-items-center gap-3 text-muted" style="font-size:14px;">
-              <span><i class="bi bi-calendar3 me-1"></i><%=press.getCreatedAt() != null ? press.getCreatedAt().substring(0, 10) : ""%></span>
-              <%if (press.getSourceUrl() != null && !press.getSourceUrl().isEmpty()) {%>
-              <a href="<%=press.getSourceUrl()%>" target="_blank" class="text-decoration-none" style="color:#0d6efd;">
-                <i class="bi bi-box-arrow-up-right me-1"></i>원문 보기
-              </a>
-              <%}%>
-            </div>
-          </div>
-
-          <!-- 썸네일 -->
-          <%if (press.getThumbnailPath() != null && !press.getThumbnailPath().isEmpty()) {%>
-          <div class="text-center mb-4">
-            <img src="<%=request.getContextPath()%>/<%=press.getThumbnailPath()%>" class="press-detail-thumb" alt="<%=press.getTitle()%>">
-          </div>
-          <%}%>
-
-          <!-- 본문 (Quill 에디터 렌더링) -->
-          <%if (press.getContent() != null && !press.getContent().isEmpty()) {%>
-          <div class="ql-container ql-snow">
-            <div class="ql-editor"><%=press.getContent()%></div>
-          </div>
-          <%}%>
-
-          <!-- 목록으로 버튼 -->
-          <div class="btn-back">
-            <a href="main.windy?menu=press_list" class="btn btn-outline-secondary">
-              <i class="bi bi-list me-1"></i>목록으로
-            </a>
-          </div>
-
-        <%} else {%>
+        <%if (post == null || post.getPostId() == -1) {%>
           <div class="text-center py-5"><p>게시글을 찾을 수 없습니다.</p></div>
+        <%} else {%>
+
+        <div class="post-header">
+          <h3><%=post.getTitle()%></h3>
+          <div class="post-meta">
+            <span><i class="bi bi-calendar3"></i> <%=post.getCreatedAt() != null && post.getCreatedAt().length() >= 10 ? post.getCreatedAt().substring(0, 10) : ""%></span>
+            <span><i class="bi bi-eye"></i> <%=post.getViewCount()%></span>
+          </div>
+        </div>
+
+        <div class="post-content ql-editor" style="padding: 0;">
+          <%=post.getContent()%>
+        </div>
+
+        <div class="text-center mt-5">
+          <button type="button" class="btn-list" onclick="location.href='main.windy?menu=board&boardId=<%=boardId%>'">목록</button>
+        </div>
+
         <%}%>
+
       </div>
     </section>
 
