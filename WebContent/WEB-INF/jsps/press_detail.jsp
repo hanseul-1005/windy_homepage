@@ -1,4 +1,4 @@
-<%@page import="windy.homepage.model.PressModel"%>
+﻿<%@page import="windy.homepage.model.PressModel"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 PressModel press = (PressModel) request.getAttribute("press");
@@ -12,17 +12,17 @@ PressModel press = (PressModel) request.getAttribute("press");
   <title>윈디 홈페이지</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
-  <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
-  <link href="bootstrap_enno/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="bootstrap_windy/assets/img/favicon.png" rel="icon">
+  <link href="bootstrap_windy/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/css/main.css" rel="stylesheet">
   <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <style>
     .ql-editor { padding: 0; border: none; }
@@ -103,11 +103,11 @@ PressModel press = (PressModel) request.getAttribute("press");
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <div id="preloader"></div>
 
-  <script src="bootstrap_enno/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/aos/aos.js"></script>
-  <script src="bootstrap_enno/assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="bootstrap_enno/assets/js/main.js"></script>
+  <script src="bootstrap_windy/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/aos/aos.js"></script>
+  <script src="bootstrap_windy/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/js/main.js"></script>
 
 </body>
 </html>

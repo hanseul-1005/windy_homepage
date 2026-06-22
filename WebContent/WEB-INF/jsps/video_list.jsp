@@ -1,4 +1,4 @@
-<%@page import="windy.homepage.model.VideoModel"%>
+﻿<%@page import="windy.homepage.model.VideoModel"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
@@ -13,17 +13,17 @@ List<VideoModel> listVideo = (List<VideoModel>) request.getAttribute("listVideo"
   <title>윈디 홈페이지</title>
   <meta name="description" content="">
   <meta name="keywords" content="">
-  <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
-  <link href="bootstrap_enno/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+  <link href="bootstrap_windy/assets/img/favicon.png" rel="icon">
+  <link href="bootstrap_windy/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
   <link href="https://fonts.googleapis.com" rel="preconnect">
   <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/aos/aos.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
-  <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/aos/aos.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+  <link href="bootstrap_windy/assets/css/main.css" rel="stylesheet">
   <style>
     .video-card { border-radius: 10px; overflow: hidden; cursor: pointer; background: #fff;
       box-shadow: 0 2px 12px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; border: none; }
@@ -43,7 +43,7 @@ List<VideoModel> listVideo = (List<VideoModel>) request.getAttribute("listVideo"
     .video-card .video-badge { display: inline-block; font-size: 0.72rem; font-weight: 600;
       background: #e8f0fe; color: #1a73e8; border-radius: 4px; padding: 2px 8px; margin-bottom: 6px; }
     .video-card .video-desc { font-size: 0.8rem; color: #666; line-height: 1.5;
-      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden; }
   </style>
 </head>
 <body class="portfolio-details-page">
@@ -159,11 +159,11 @@ List<VideoModel> listVideo = (List<VideoModel>) request.getAttribute("listVideo"
   <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <div id="preloader"></div>
 
-  <script src="bootstrap_enno/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/aos/aos.js"></script>
-  <script src="bootstrap_enno/assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="bootstrap_enno/assets/js/main.js"></script>
+  <script src="bootstrap_windy/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/aos/aos.js"></script>
+  <script src="bootstrap_windy/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/js/main.js"></script>
   <script>
   function openVideoModal(ytId, title) {
     if (!ytId) return;

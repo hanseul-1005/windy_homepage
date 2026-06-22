@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import windy.homepage.dao.BoardDAO;
+import windy.homepage.dao.PopupDAO;
 import windy.homepage.dao.CertificationDAO;
 import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
@@ -50,6 +51,7 @@ public class Main extends HttpServlet {
         PressDAO         pressDAO     = new PressDAO();
         VideoDAO         videoDAO     = new VideoDAO();
         BoardDAO         boardDAO     = new BoardDAO();
+        PopupDAO         popupDAO     = new PopupDAO();
 
         // 동적 게시판 메뉴 (모든 페이지의 top_menu에서 사용)
         request.setAttribute("menuBoards", boardDAO.selectActiveBoards());
@@ -61,6 +63,7 @@ public class Main extends HttpServlet {
             request.setAttribute("listPortfolio", listPortfolio);
             request.setAttribute("listNotice", listNotice);
             request.setAttribute("listVideo", listVideo);
+            request.setAttribute("listPopup", popupDAO.selectActivePopups());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/main.jsp");
             dispatcher.forward(request, response);
 

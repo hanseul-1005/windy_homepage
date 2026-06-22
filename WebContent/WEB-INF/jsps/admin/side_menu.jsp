@@ -72,6 +72,13 @@ String menu = (String) request.getParameter("menu");
       </li>
 
       <li class="nav-item">
+        <a class="nav-link <%if(!"popup_list".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=popup_list">
+          <i class="bi bi-window-stack"></i>
+          <span>Popup</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link <%if(!"contact_list".equals(menu) && !"contact_detail".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=contact_list">
           <i class="bi bi-envelope"></i>
           <span>Contact Us</span>

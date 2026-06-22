@@ -166,6 +166,22 @@ CREATE TABLE IF NOT EXISTS editor_image (
     PRIMARY KEY (image_id)
 );
 
+-- 팝업
+CREATE TABLE IF NOT EXISTS popup (
+    popup_id        INT             NOT NULL AUTO_INCREMENT,
+    title           VARCHAR(200)    NOT NULL COMMENT '팝업 제목 (관리용)',
+    image_path      VARCHAR(500)    NOT NULL COMMENT '팝업 이미지 파일 경로',
+    description     TEXT            COMMENT '팝업 하단 텍스트 (선택)',
+    link_url        VARCHAR(1000)   COMMENT '클릭 시 이동 URL (선택)',
+    start_date      DATE            NOT NULL COMMENT '노출 시작일',
+    end_date        DATE            NOT NULL COMMENT '노출 종료일',
+    display_order   INT             NOT NULL DEFAULT 0 COMMENT '표시 순서 (작을수록 먼저)',
+    hide_options    VARCHAR(20)     NOT NULL DEFAULT '1,7,30' COMMENT '안보기 옵션 일수 (콤마구분, 예: 1,7,30)',
+    use_yn          CHAR(1)         NOT NULL DEFAULT 'Y' COMMENT '노출 여부 Y/N',
+    created_at      DATETIME        NOT NULL DEFAULT NOW(),
+    PRIMARY KEY (popup_id)
+);
+
 -- =============================================
 -- 초기 관리자 계정 (비밀번호는 평문, 필요시 해시로 변경)
 -- INSERT INTO admin (admin_name, admin_pw) VALUES ('admin', 'windy@0136');

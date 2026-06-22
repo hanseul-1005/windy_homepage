@@ -1,4 +1,4 @@
-<%@page import="windy.homepage.model.BoardModel"%>
+﻿<%@page import="windy.homepage.model.BoardModel"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
@@ -10,13 +10,13 @@ List<BoardModel> listBoard = (List<BoardModel>) request.getAttribute("listBoard"
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>윈디 관리자 페이지</title>
-  <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
+  <link href="bootstrap_windy/assets/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Nunito:300,400,600,700|Poppins:300,400,500,600,700" rel="stylesheet">
-  <link href="bootstrap_nice/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="bootstrap_nice/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="bootstrap_nice/assets/vendor/simple-datatables/style.css" rel="stylesheet">
-  <link href="bootstrap_nice/assets/css/style.css" rel="stylesheet">
-  <script src="bootstrap_nice/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <link href="bootstrap_windy_admin/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="bootstrap_windy_admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="bootstrap_windy_admin/assets/vendor/simple-datatables/style.css" rel="stylesheet">
+  <link href="bootstrap_windy_admin/assets/css/style.css" rel="stylesheet">
+  <script src="bootstrap_windy_admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <style>
 table td, table th { text-align: center; vertical-align: middle; }
@@ -87,7 +87,7 @@ table td, table th { text-align: center; vertical-align: middle; }
                       <button type="button" class="btn btn-outline-primary btn-sm"
                               onclick="location.href='admin.windy?menu=board_post_list&boardId=<%=board.getBoardId()%>'">글 관리</button>
                       <button type="button" class="btn btn-outline-secondary btn-sm"
-                              onclick="openEditModal(<%=board.getBoardId()%>, '<%=board.getBoardName().replace("'", "\\'")%>', '<%=board.getMenuGroup()%>', '<%=board.getBoardType()%>', <%=board.getDisplayOrder()%>, '<%=board.getUseYn()%>')">수정</button>
+                              onclick="openEditModal(<%=board.getBoardId()%>, '<%=board.getBoardName().replace("'", "\\'").replace("\"", "&quot;")%>', '<%=board.getMenuGroup()%>', '<%=board.getBoardType()%>', <%=board.getDisplayOrder()%>, '<%=board.getUseYn()%>')">수정</button>
                       <button type="button" class="btn btn-outline-danger btn-sm"
                               onclick="goDelete(<%=board.getBoardId()%>, <%=board.getPostCount()%>)">삭제</button>
                     </td>
@@ -160,8 +160,8 @@ table td, table th { text-align: center; vertical-align: middle; }
 
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-  <script src="bootstrap_nice/assets/vendor/simple-datatables/simple-datatables.js"></script>
-  <script src="bootstrap_nice/assets/js/main.js"></script>
+  <script src="bootstrap_windy_admin/assets/vendor/simple-datatables/simple-datatables.js"></script>
+  <script src="bootstrap_windy_admin/assets/js/main.js"></script>
   <script>
   var boardModal = new bootstrap.Modal(document.getElementById('boardModal'));
 

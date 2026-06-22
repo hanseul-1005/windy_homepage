@@ -1,13 +1,16 @@
-<%@page import="windy.homepage.model.PortfolioModel"%>
+﻿<%@page import="windy.homepage.model.PortfolioModel"%>
 <%@page import="windy.homepage.model.PortfolioImageModel"%>
 <%@page import="windy.homepage.model.NoticeModel"%>
 <%@page import="windy.homepage.model.VideoModel"%>
+<%@page import="windy.homepage.model.PopupModel"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 List<PortfolioModel> listPortfolio = (List<PortfolioModel>) request.getAttribute("listPortfolio");
 List<NoticeModel>    listNotice    = (List<NoticeModel>)    request.getAttribute("listNotice");
 List<VideoModel>     listVideo     = (List<VideoModel>)     request.getAttribute("listVideo");
+@SuppressWarnings("unchecked")
+List<PopupModel>     listPopup     = (List<PopupModel>)     request.getAttribute("listPopup");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -20,22 +23,22 @@ List<VideoModel>     listVideo     = (List<VideoModel>)     request.getAttribute
   	<meta name="keywords" content="">
 
  	 <!-- Favicons -->
- 	 <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
-	 <link href="bootstrap_enno/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+ 	 <link href="bootstrap_windy/assets/img/favicon.png" rel="icon">
+	 <link href="bootstrap_windy/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 	 <!-- Fonts -->
 	 <link href="https://fonts.googleapis.com" rel="preconnect">
 	 <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
 	 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 	
 	 <!-- Vendor CSS Files -->
-	 <link href="bootstrap_enno/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/aos/aos.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/aos/aos.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 	
 	 <!-- Main CSS File -->
-	 <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/css/main.css" rel="stylesheet">
 	 <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
 	 <style>
 	   .notice-content { overflow: hidden; font-size: 14px; line-height: 1.7; }
@@ -506,16 +509,16 @@ List<VideoModel>     listVideo     = (List<VideoModel>)     request.getAttribute
 
   <!-- Vendor JS Files -->
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/php-email-form/validate.js"></script>
-  <script src="bootstrap_enno/assets/vendor/aos/aos.js"></script>
-  <script src="bootstrap_enno/assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/php-email-form/validate.js"></script>
+  <script src="bootstrap_windy/assets/vendor/aos/aos.js"></script>
+  <script src="bootstrap_windy/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="bootstrap_enno/assets/js/main.js"></script>
+  <script src="bootstrap_windy/assets/js/main.js"></script>
   <script>
   function openVideoModal(ytId, title) {
     if (!ytId) return;
@@ -561,6 +564,133 @@ List<VideoModel>     listVideo     = (List<VideoModel>)     request.getAttribute
     });
   }
   </script>
+
+<%-- ===== 팝업 (position:fixed, 오버레이 없음) ===== --%>
+<%if (listPopup != null && !listPopup.isEmpty()) {
+    for (int pi = 0; pi < listPopup.size(); pi++) {
+        PopupModel pop = listPopup.get(pi);
+        String safeLink = pop.getLinkUrl().isEmpty() ? "" : pop.getLinkUrl().replace("\"", "&quot;");
+%>
+<div id="popup<%=pop.getPopupId()%>" class="site-popup" data-index="<%=pi%>"
+     style="display:none; position:fixed; width:320px; z-index:<%=9000 + pi%>;
+            border-radius:10px; overflow:hidden; box-shadow:0 8px 32px rgba(0,0,0,0.25); background:#fff;">
+  <div>
+    <%if (!safeLink.isEmpty()) {%>
+      <a href="<%=safeLink%>">
+        <img src="<%=pop.getImagePath()%>" alt="<%=pop.getTitle()%>" style="width:100%; display:block;">
+      </a>
+    <%} else {%>
+      <img src="<%=pop.getImagePath()%>" alt="<%=pop.getTitle()%>" style="width:100%; display:block;">
+    <%}%>
+  </div>
+  <%if (!pop.getDescription().isEmpty()) {%>
+  <div style="padding:12px 14px; font-size:13px; line-height:1.6; color:#333; white-space:pre-wrap; border-top:1px solid #eee;"><%=pop.getDescription().replace("<", "&lt;").replace(">", "&gt;")%></div>
+  <%}%>
+  <div style="background:#f8f8f8; padding:10px 12px; display:flex; justify-content:space-between; align-items:center; flex-wrap:nowrap; gap:4px;">
+    <div style="display:flex; gap:4px; flex-wrap:nowrap;">
+      <%
+        String hideOpt = pop.getHideOptions();
+        if (!"none".equals(hideOpt)) {
+            String hideBtnLabel = "7".equals(hideOpt) ? "일주일 안보기" : "30".equals(hideOpt) ? "한달 안보기" : "24시간 안보기";
+            int hideDays = "7".equals(hideOpt) ? 7 : "30".equals(hideOpt) ? 30 : 1;
+      %>
+      <button type="button" class="btn btn-sm btn-outline-secondary" style="font-size:11px; padding:3px 7px; white-space:nowrap;"
+              onclick="closePopup(<%=pop.getPopupId()%>, <%=hideDays%>)"><%=hideBtnLabel%></button>
+      <% } %>
+    </div>
+    <button type="button" class="btn btn-sm btn-secondary" style="font-size:11px; padding:3px 8px; white-space:nowrap;"
+            onclick="hidePopup(<%=pop.getPopupId()%>)">닫기</button>
+  </div>
+</div>
+<%  }  %>
+<style>
+@media (max-width: 767px) {
+  .site-popup { width: calc(100vw - 24px) !important; left: 12px !important; right: 12px !important; }
+}
+</style>
+<script>
+(function() {
+  var POPUP_WIDTH  = 320;
+  var POPUP_GAP    = 16;
+  var POPUP_TOP    = 80;
+
+  function getCookie(name) {
+    var v = document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)');
+    return v ? v[2] : null;
+  }
+  function setCookie(name, days) {
+    var d = new Date();
+    d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000);
+    document.cookie = name + '=1; expires=' + d.toUTCString() + '; path=/';
+  }
+
+  var allIds = [<%
+    for (int pi = 0; pi < listPopup.size(); pi++) {
+        out.print(listPopup.get(pi).getPopupId());
+        if (pi < listPopup.size() - 1) out.print(",");
+    }
+  %>];
+
+  // 쿠키 미설정 팝업만 필터링
+  var visibleIds = allIds.filter(function(id) {
+    return !getCookie('popup_hide_' + id);
+  });
+
+  var isMobile = window.innerWidth < 768;
+
+  // 데스크탑: 전체 팝업 그룹을 화면 중앙 기준으로 배치
+  var totalWidth = visibleIds.length * POPUP_WIDTH + (visibleIds.length - 1) * POPUP_GAP;
+  var groupLeft  = Math.max(POPUP_GAP, Math.floor((window.innerWidth - totalWidth) / 2));
+
+  // 높이 측정을 위해 먼저 invisible 상태로 표시 후 위치 계산
+  visibleIds.forEach(function(id) {
+    var el = document.getElementById('popup' + id);
+    if (!el) return;
+    el.style.visibility = 'hidden';
+    el.style.display    = 'block';
+  });
+
+  visibleIds.forEach(function(id, idx) {
+    var el = document.getElementById('popup' + id);
+    if (!el) return;
+    if (isMobile) {
+      el.style.left  = '12px';
+      el.style.right = '12px';
+      el.style.width = 'calc(100vw - 24px)';
+      el.style.top   = (POPUP_TOP + idx * (el.offsetHeight + POPUP_GAP)) + 'px';
+    } else {
+      var popupH = el.offsetHeight;
+      var topPos = Math.max(POPUP_GAP, Math.floor((window.innerHeight - popupH) / 2));
+      el.style.left = (groupLeft + idx * (POPUP_WIDTH + POPUP_GAP)) + 'px';
+      el.style.top  = topPos + 'px';
+    }
+    el.style.visibility = 'visible';
+  });
+
+  // 모바일에서 위치 재계산 (이미지 로드 후 높이 확정)
+  if (isMobile && visibleIds.length > 1) {
+    window.addEventListener('load', function() {
+      var top = POPUP_TOP;
+      visibleIds.forEach(function(id) {
+        var el = document.getElementById('popup' + id);
+        if (!el) return;
+        el.style.top = top + 'px';
+        top += el.offsetHeight + POPUP_GAP;
+      });
+    });
+  }
+
+  window.closePopup = function(id, days) {
+    setCookie('popup_hide_' + id, days);
+    hidePopup(id);
+  };
+  window.hidePopup = function(id) {
+    var el = document.getElementById('popup' + id);
+    if (el) el.style.display = 'none';
+  };
+})();
+</script>
+<%}%>
 
 </body>
 

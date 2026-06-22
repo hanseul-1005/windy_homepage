@@ -20,6 +20,7 @@ import javax.servlet.http.Part;
 import org.json.simple.JSONObject;
 
 import windy.homepage.dao.BoardDAO;
+import windy.homepage.dao.PopupDAO;
 import windy.homepage.dao.CertificationDAO;
 import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
@@ -30,6 +31,7 @@ import windy.homepage.dao.ProductDAO;
 import windy.homepage.dao.VideoDAO;
 import windy.homepage.model.BoardModel;
 import windy.homepage.model.BoardPostModel;
+import windy.homepage.model.PopupModel;
 import windy.homepage.model.CertificationModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.HistoryModel;
@@ -227,6 +229,12 @@ public class Admin extends HttpServlet {
             request.setAttribute("post", post);
             request.setAttribute("board", boardDAO.selectBoard(post.getBoardId()));
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/board/post_modify.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("popup_list".equals(menu)) {
+            PopupDAO popupDAO = new PopupDAO();
+            request.setAttribute("listPopup", popupDAO.selectListPopup());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/popup/popup_list.jsp");
             dispatcher.forward(request, response);
         }
     }
@@ -671,6 +679,61 @@ public class Admin extends HttpServlet {
             int result = boardDAO.deletePost(postId);
             objResult.put("result", result > 0 ? "true" : "false");
 
+        } else if ("popup_add".equals(mode)) {
+            PopupDAO popupDAO = new PopupDAO();
+            Part imagePart = request.getPart("imageFile");
+            String imagePath = "";
+            if (imagePart != null && imagePart.getSize() > 0) {
+                String fileName = saveUploadFile(imagePart, "popup");
+                if (fileName != null) imagePath = "uploads/popup/" + fileName;
+            }
+            if (imagePath.isEmpty()) {
+                objResult.put("result", "false");
+                objResult.put("msg", "이미지를 업로드해주세요.");
+            } else {
+                PopupModel model = new PopupModel();
+                model.setTitle(request.getParameter("title"));
+                model.setImagePath(imagePath);
+                model.setDescription(request.getParameter("description") != null ? request.getParameter("description") : "");
+                model.setLinkUrl(request.getParameter("linkUrl") != null ? request.getParameter("linkUrl") : "");
+                model.setStartDate(request.getParameter("startDate"));
+                model.setEndDate(request.getParameter("endDate"));
+                String orderParam = request.getParameter("displayOrder");
+                model.setDisplayOrder(orderParam != null && !orderParam.trim().isEmpty() ? Integer.parseInt(orderParam) : 0);
+                model.setHideOptions(buildHideOptions(request));
+                model.setUseYn(request.getParameter("useYn") != null ? request.getParameter("useYn") : "Y");
+                int result = popupDAO.insertPopup(model);
+                objResult.put("result", result > 0 ? "true" : "false");
+            }
+
+        } else if ("popup_update".equals(mode)) {
+            PopupDAO popupDAO = new PopupDAO();
+            int popupId = Integer.parseInt(request.getParameter("popupId"));
+            PopupModel model = popupDAO.selectPopup(popupId);
+            // 새 이미지가 업로드된 경우에만 교체
+            Part imagePart = request.getPart("imageFile");
+            if (imagePart != null && imagePart.getSize() > 0) {
+                String fileName = saveUploadFile(imagePart, "popup");
+                if (fileName != null) model.setImagePath("uploads/popup/" + fileName);
+            }
+            model.setTitle(request.getParameter("title"));
+            model.setDescription(request.getParameter("description") != null ? request.getParameter("description") : "");
+            model.setLinkUrl(request.getParameter("linkUrl") != null ? request.getParameter("linkUrl") : "");
+            model.setStartDate(request.getParameter("startDate"));
+            model.setEndDate(request.getParameter("endDate"));
+            String orderParam = request.getParameter("displayOrder");
+            model.setDisplayOrder(orderParam != null && !orderParam.trim().isEmpty() ? Integer.parseInt(orderParam) : 0);
+            model.setHideOptions(buildHideOptions(request));
+            model.setUseYn(request.getParameter("useYn") != null ? request.getParameter("useYn") : "Y");
+            int result = popupDAO.updatePopup(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("popup_delete".equals(mode)) {
+            PopupDAO popupDAO = new PopupDAO();
+            int popupId = Integer.parseInt(request.getParameter("popupId"));
+            int result = popupDAO.deletePopup(popupId);
+            objResult.put("result", result > 0 ? "true" : "false");
+
         } else if ("editor_image_upload".equals(mode)) {
             // Quill 에디터 이미지 업로드: 파일로 저장 후 URL 반환 (base64 대신)
             Part imagePart = request.getPart("image");
@@ -718,6 +781,13 @@ public class Admin extends HttpServlet {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /** 팝업 안보기 옵션: 라디오 선택값 (1 / 7 / 30 / none) */
+    private String buildHideOptions(HttpServletRequest request) {
+        String val = request.getParameter("hideOption");
+        if ("7".equals(val) || "30".equals(val) || "none".equals(val)) return val;
+        return "1";
     }
 
     private String saveProductImage(Part filePart, HttpServletRequest request) {

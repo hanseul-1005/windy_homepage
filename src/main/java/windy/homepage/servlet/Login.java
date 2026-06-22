@@ -22,6 +22,12 @@ public class Login extends HttpServlet {
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setCharacterEncoding("UTF-8");
+        if ("logout".equals(request.getParameter("mode"))) {
+            HttpSession session = request.getSession(false);
+            if (session != null) session.invalidate();
+            response.sendRedirect("login.windy");
+            return;
+        }
         RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/login.jsp");
         dispatcher.forward(request, response);
     }

@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
 
@@ -16,22 +16,22 @@ String contents = (String) request.getAttribute("contents");
   	<meta name="keywords" content="">
 
  	 <!-- Favicons -->
- 	 <link href="bootstrap_enno/assets/img/favicon.png" rel="icon">
-	 <link href="bootstrap_enno/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+ 	 <link href="bootstrap_windy/assets/img/favicon.png" rel="icon">
+	 <link href="bootstrap_windy/assets/img/apple-touch-icon.png" rel="apple-touch-icon">
 	 <!-- Fonts -->
 	 <link href="https://fonts.googleapis.com" rel="preconnect">
 	 <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
 	 <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap" rel="stylesheet">
 	
 	 <!-- Vendor CSS Files -->
-	 <link href="bootstrap_enno/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/aos/aos.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
-	 <link href="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/aos/aos.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet">
 	
 	 <!-- Main CSS File -->
-	 <link href="bootstrap_enno/assets/css/main.css" rel="stylesheet">
+	 <link href="bootstrap_windy/assets/css/main.css" rel="stylesheet">
 <script type="text/javascript">
 
 function goDetail(num) {
@@ -239,16 +239,16 @@ function goDetail(num) {
   <div id="preloader"></div>
 
   <!-- Vendor JS Files -->
-  <script src="bootstrap_enno/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/php-email-form/validate.js"></script>
-  <script src="bootstrap_enno/assets/vendor/aos/aos.js"></script>
-  <script src="bootstrap_enno/assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
-  <script src="bootstrap_enno/assets/vendor/swiper/swiper-bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/php-email-form/validate.js"></script>
+  <script src="bootstrap_windy/assets/vendor/aos/aos.js"></script>
+  <script src="bootstrap_windy/assets/vendor/glightbox/js/glightbox.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/imagesloaded/imagesloaded.pkgd.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+  <script src="bootstrap_windy/assets/vendor/swiper/swiper-bundle.min.js"></script>
 
   <!-- Main JS File -->
-  <script src="bootstrap_enno/assets/js/main.js"></script>
+  <script src="bootstrap_windy/assets/js/main.js"></script>
 
 </body>
 
