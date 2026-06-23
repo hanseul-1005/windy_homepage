@@ -8,8 +8,8 @@ public class DatabaseModel {
 	//private String password = "wind@0136";
 
 	// 로컬
-	private String jdbcUrl = "jdbc:mariadb://localhost:3306/windy_homepage?characterEncoding=UTF-8&serverTimezone=Asia/Seoul";
-	private String user = "windy_homepage";
+	private String jdbcUrl = "jdbc:mariadb://localhost:3306/homepage_windy?characterEncoding=UTF-8&serverTimezone=Asia/Seoul";
+	private String user = "homepage_windy";
 	private String password = "homepage@0136";
 
     public String getJdbcUrl() { return jdbcUrl; }
