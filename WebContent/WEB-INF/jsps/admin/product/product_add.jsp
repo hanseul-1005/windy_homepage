@@ -1,16 +1,16 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
   <title>윈디 관리자 페이지</title>
-  <link href="bootstrap_windy/assets/img/favicon.png" rel="icon">
+  <link href="windy_css/assets/img/favicon.png" rel="icon">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Nunito:300,400,600,700|Poppins:300,400,500,600,700" rel="stylesheet">
-  <link href="bootstrap_windy_admin/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-  <link href="bootstrap_windy_admin/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
-  <link href="bootstrap_windy_admin/assets/css/style.css" rel="stylesheet">
-  <script src="bootstrap_windy_admin/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <link href="windy_admin_css/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+  <link href="windy_admin_css/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+  <link href="windy_admin_css/assets/css/style.css" rel="stylesheet">
+  <script src="windy_admin_css/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
     .img-preview { position: relative; display: inline-block; margin: 5px; }
@@ -90,7 +90,7 @@
     <div class="copyright">&copy; Copyright <strong><span>Windy</span></strong>. All Rights Reserved</div>
   </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  <script src="bootstrap_windy_admin/assets/js/main.js"></script>
+  <script src="windy_admin_css/assets/js/main.js"></script>
   <script>
   var selectedFiles = [];
 

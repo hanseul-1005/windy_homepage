@@ -1,4 +1,4 @@
-﻿
+
 <%@page import="windy.homepage.model.BoardModel"%>
 <%@page import="java.util.List"%>
 <%@page import="java.util.ArrayList"%>
@@ -38,7 +38,7 @@
 
       <a href="main.windy?menu=home&#hero" class="logo d-flex align-items-center me-auto">
         <!-- Uncomment the line below if you also wish to use an image logo -->
-        <!-- <img src="bootstrap_windy/assets/img/logo.webp" alt=""> -->
+        <!-- <img src="windy_css/assets/img/logo.webp" alt=""> -->
         <!-- <h1 class="sitename">WINDY</h1> -->
         <img alt="main.windy?menu=home&#hero" src="img/img_logo.png">
       </a>
