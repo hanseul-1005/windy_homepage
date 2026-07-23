@@ -19,7 +19,7 @@
           <div>
             <h4>Contact</h4>
             <p>
-              <strong>연락처:</strong> <span>010-9924-0136</span><br>
+              <strong>연락처:</strong> <span>0507-1347-0136</span><br>
               <strong>이메일:</strong> <span>sybaek@windy.ai.kr</span><br>
             </p>
           </div>

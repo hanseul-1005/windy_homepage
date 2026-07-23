@@ -440,7 +440,7 @@ List<PopupModel>     listPopup     = (List<PopupModel>)     request.getAttribute
                 <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="200">
                   <i class="bi bi-geo-alt"></i>
                   <h3>주소</h3>
-                  <p>광주광역시 북구 첨단과기로208번길 17-11, 206호</p>
+                  <p>전남광주통합특별시 북구 첨단과기로208번길 17-11, 206호</p>
                 </div>
               </div><!-- End Info Item -->
 
@@ -448,7 +448,7 @@ List<PopupModel>     listPopup     = (List<PopupModel>)     request.getAttribute
                 <div class="info-item d-flex flex-column justify-content-center align-items-center" data-aos="fade-up" data-aos-delay="300">
                   <i class="bi bi-telephone"></i>
                   <h3>연락처</h3>
-                  <p>010-9924-0136</p>
+                  <p>0507-1347-0136</p>
                 </div>
               </div><!-- End Info Item -->
 
