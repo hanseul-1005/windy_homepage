@@ -1000,6 +1000,16 @@ section,
   line-height: 1;
 }
 
+/* PNG 아이콘: accent-color(#ff0000)와 동일한 색상으로 필터 적용 */
+.services .service-card .icon img {
+  filter: brightness(0) saturate(100%) invert(14%) sepia(100%) saturate(6000%) hue-rotate(350deg) brightness(110%) contrast(110%);
+  transition: filter 0.3s ease;
+}
+/* hover 시 배경이 accent-color로 바뀌므로 img도 흰색으로 전환 */
+.services .service-card:hover .icon img {
+  filter: brightness(0) invert(1);
+}
+
 .services .service-card h3 {
   font-size: 22px;
   font-weight: 700;

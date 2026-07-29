@@ -288,16 +288,6 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
       }
       .bf-arrow:hover { background: #f0f4ff; border-color: #86b7fe; color: #0d6efd; }
       .bf-arrow:disabled { opacity: 0.3; cursor: default; }
-      /* PNG 아이콘을 Bootstrap 아이콘과 동일한 accent-color(#ff0000)로 맞춤 */
-      /* brightness(0)으로 원본 색상 제거 후 red 필터 적용 */
-      .services .service-card .icon img {
-        filter: brightness(0) saturate(100%) invert(14%) sepia(100%) saturate(6000%) hue-rotate(350deg) brightness(110%) contrast(110%);
-        transition: filter 0.3s ease;
-      }
-      /* hover 시 배경이 red로 바뀌므로 아이콘은 흰색으로 전환 */
-      .services .service-card:hover .icon img {
-        filter: brightness(0) invert(1);
-      }
       </style>
 
     </section><!-- /Services Section -->
