@@ -1,3 +1,6 @@
+<%-- 비즈니스 필드 등록 페이지 --%>
+<%-- 아이콘은 Bootstrap 아이콘 선택 또는 이미지 직접 업로드 중 하나를 선택 --%>
+<%-- 이미지 업로드 시 FormData로 multipart 전송, 파일은 uploads/business_field/ 에 저장됨 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,7 +42,7 @@
                 <button type="button" class="btn btn-primary ms-2" onclick="goAdd()">등록</button>
               </div>
 
-              <!-- 아이콘 선택 영역 -->
+              <%-- 아이콘 선택 영역: Bootstrap 아이콘 탭 / 이미지 업로드 탭 전환 --%>
               <div class="row mb-1">
                 <label class="col-sm-2 col-form-label">아이콘</label>
                 <div class="col-sm-8">
@@ -52,7 +55,7 @@
                     </li>
                   </ul>
 
-                  <!-- Bootstrap 아이콘 탭 -->
+                  <%-- Bootstrap 아이콘 탭: 클래스명 직접 입력 또는 피커에서 선택 --%>
                   <div id="panel-bi">
                     <div class="input-group">
                       <span class="input-group-text"><i id="iconPreview" class="bi bi-star"></i></span>
@@ -61,7 +64,7 @@
                     </div>
                   </div>
 
-                  <!-- 이미지 업로드 탭 -->
+                  <%-- 이미지 업로드 탭: 파일 선택 후 미리보기 표시 --%>
                   <div id="panel-img" style="display:none;">
                     <div class="d-flex align-items-center gap-3">
                       <input type="file" id="iconFile" class="form-control" accept="image/*" style="max-width:320px;" onchange="previewImgIcon(this)">
@@ -102,26 +105,31 @@
   </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <script src="css_admin/assets/js/main.js"></script>
+  <%-- 아이콘 피커 모달 (Bootstrap 아이콘 목록 + 검색) --%>
   <jsp:include page="../icon_picker_modal.jsp"/>
   <script>
-  var currentTab = 'bi';
+  var currentTab = 'bi'; // 현재 활성 탭 ('bi' | 'img')
 
+  /** 탭 전환: Bootstrap 아이콘 ↔ 이미지 업로드 */
   function switchTab(tab) {
     currentTab = tab;
     document.getElementById('panel-bi').style.display  = tab === 'bi'  ? '' : 'none';
     document.getElementById('panel-img').style.display = tab === 'img' ? '' : 'none';
     document.getElementById('tab-bi').classList.toggle('active',  tab === 'bi');
     document.getElementById('tab-img').classList.toggle('active', tab === 'img');
+    // Bootstrap 탭으로 돌아올 때 파일 선택 초기화
     if (tab === 'bi') {
       document.getElementById('iconFile').value = '';
       document.getElementById('imgPreview').style.display = 'none';
     }
   }
 
+  /** Bootstrap 아이콘 클래스 입력 시 왼쪽 미리보기 갱신 */
   function previewBiIcon(val) {
     document.getElementById('iconPreview').className = 'bi ' + val.trim();
   }
 
+  /** 이미지 파일 선택 시 미리보기 표시 */
   function previewImgIcon(input) {
     var file = input.files[0];
     if (!file) return;
@@ -134,6 +142,11 @@
     reader.readAsDataURL(file);
   }
 
+  /**
+   * 비즈니스 필드 등록
+   * - 파일 업로드가 포함될 수 있으므로 FormData + multipart 방식으로 전송
+   * - 현재 탭에 따라 icon(Bootstrap 클래스) 또는 iconFile(이미지) 전송
+   */
   function goAdd() {
     var title     = $('#title').val().trim();
     var content   = $('#content').val().trim();
@@ -161,8 +174,8 @@
       type: "POST",
       url: "admin.windy?mode=business_field_add",
       data: fd,
-      processData: false,
-      contentType: false,
+      processData: false, // FormData는 jQuery가 직렬화하지 않도록 설정
+      contentType: false, // multipart/form-data 자동 설정
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {

@@ -125,6 +125,7 @@ public class Admin extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/contact_us/contact_detail.jsp");
             dispatcher.forward(request, response);
 
+        // ── Business Field 관리 (목록/등록/수정) ──────────────────────────────────
         } else if ("business_field_list".equals(menu)) {
             request.setAttribute("listBusinessField", businessFieldDAO.selectListBusinessField());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/business_field/business_field_list.jsp");
@@ -318,6 +319,7 @@ public class Admin extends HttpServlet {
             int result    = contactDAO.deleteContact(contactId);
             objResult.put("result", result > 0 ? "true" : "false");
 
+        // ── Business Field 등록: iconFile 파트가 있으면 이미지 업로드, 없으면 icon 파라미터(Bootstrap 클래스) 사용 ──
         } else if ("business_field_add".equals(mode)) {
             String title     = request.getParameter("title");
             String content   = request.getParameter("content");
@@ -326,6 +328,7 @@ public class Admin extends HttpServlet {
             String icon;
             Part iconFilePart = request.getPart("iconFile");
             if (iconFilePart != null && iconFilePart.getSize() > 0) {
+                // 이미지 업로드: 외부 디렉토리에 저장 후 경로를 icon에 저장
                 String fileName = saveUploadFile(iconFilePart, "business_field");
                 icon = (fileName != null) ? "uploads/business_field/" + fileName : "bi-star";
             } else {
@@ -342,6 +345,7 @@ public class Admin extends HttpServlet {
             int result = businessFieldDAO.insertBusinessField(model);
             objResult.put("result", result > 0 ? "true" : "false");
 
+        // ── Business Field 수정: icon이 null/빈값이면 아이콘 제외 업데이트(기존 이미지 유지) ──
         } else if ("business_field_update".equals(mode)) {
             int    businessFieldId = Integer.parseInt(request.getParameter("businessFieldId"));
             String title           = request.getParameter("title");
@@ -351,9 +355,11 @@ public class Admin extends HttpServlet {
             String icon;
             Part iconFilePart = request.getPart("iconFile");
             if (iconFilePart != null && iconFilePart.getSize() > 0) {
+                // 새 이미지 선택: 외부 디렉토리에 저장
                 String fileName = saveUploadFile(iconFilePart, "business_field");
                 icon = (fileName != null) ? "uploads/business_field/" + fileName : null;
             } else {
+                // Bootstrap 탭이면 icon 파라미터, 이미지 탭에서 파일 미선택이면 null
                 icon = request.getParameter("icon");
             }
 
@@ -373,6 +379,7 @@ public class Admin extends HttpServlet {
             }
             objResult.put("result", result > 0 ? "true" : "false");
 
+        // ── Business Field 삭제 ──
         } else if ("business_field_delete".equals(mode)) {
             int businessFieldId = Integer.parseInt(request.getParameter("businessFieldId"));
             int result          = businessFieldDAO.deleteBusinessField(businessFieldId);

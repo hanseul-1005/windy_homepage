@@ -1,3 +1,7 @@
+<%-- Bootstrap 아이콘 피커 모달 --%>
+<%-- business_field_add.jsp / business_field_modify.jsp에서 <jsp:include>로 삽입 --%>
+<%-- openIconPicker(): 모달 열기, selectIcon(ic): 선택 → 부모 페이지의 #icon 입력란에 반영 --%>
+<%-- ICONS 배열 구조: ['bi-클래스명', '한글명', 'english'] — 세 필드 모두 검색 대상 --%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!-- Icon Picker Modal -->
 <div class="modal fade" id="iconPickerModal" tabindex="-1">
@@ -255,6 +259,7 @@ var ICONS = [
   ['bi-layout-text-window',   '레이아웃',   'layout']
 ];
 
+/** 아이콘 그리드 렌더링 - filter가 비어있으면 전체 목록, 아니면 클래스/한글/영어 일치 항목만 표시 */
 function renderIcons(filter) {
   var grid = document.getElementById('iconGrid');
   var list = filter
@@ -275,12 +280,14 @@ function renderIcons(filter) {
   grid.innerHTML = html || '<p class="text-muted">검색 결과 없음</p>';
 }
 
+/** 아이콘 피커 모달 열기 - 검색어 초기화 후 전체 아이콘 표시 */
 function openIconPicker() {
   renderIcons('');
   document.getElementById('iconSearch').value = '';
   new bootstrap.Modal(document.getElementById('iconPickerModal')).show();
 }
 
+/** 아이콘 선택 - 부모 페이지의 #icon 입력란과 #iconPreview 미리보기 갱신 후 모달 닫기 */
 function selectIcon(ic) {
   document.getElementById('icon').value = ic;
   document.getElementById('iconPreview').className = 'bi ' + ic;

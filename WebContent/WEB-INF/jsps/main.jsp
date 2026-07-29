@@ -201,6 +201,8 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
 
         <div class="row g-4">
 
+        <%-- DB에서 조회한 Business Field 목록을 카드 형태로 동적 렌더링 --%>
+        <%-- icon이 "bi-"로 시작하면 Bootstrap 아이콘(<i>), 아니면 업로드 이미지(<img>) --%>
         <%
         if (listBusinessField != null && !listBusinessField.isEmpty()) {
             int delay = 100;

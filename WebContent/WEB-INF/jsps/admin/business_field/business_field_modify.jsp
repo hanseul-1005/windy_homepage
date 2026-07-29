@@ -1,7 +1,11 @@
+<%-- 비즈니스 필드 수정 페이지 --%>
+<%-- 기존 아이콘 유형(Bootstrap/이미지)을 감지해 해당 탭을 기본 활성화 --%>
+<%-- 이미지 탭에서 새 파일 미선택 시 기존 이미지 유지 (updateBusinessFieldNoIcon 호출) --%>
 <%@page import="windy.homepage.model.BusinessFieldModel"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 BusinessFieldModel businessField = (BusinessFieldModel) request.getAttribute("businessField");
+// icon 값이 "bi-"로 시작하지 않으면 업로드 이미지로 판단
 boolean isImage = businessField.getIcon() != null && !businessField.getIcon().startsWith("bi-");
 %>
 <!DOCTYPE html>
@@ -45,7 +49,7 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
               </div>
               <input type="hidden" id="businessFieldId" value="<%=businessField.getBusinessFieldId()%>">
 
-              <!-- 아이콘 선택 영역 -->
+              <%-- 아이콘 선택 영역: 기존 아이콘 유형에 따라 초기 탭 결정 --%>
               <div class="row mb-1">
                 <label class="col-sm-2 col-form-label">아이콘</label>
                 <div class="col-sm-8">
@@ -58,7 +62,7 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
                     </li>
                   </ul>
 
-                  <!-- Bootstrap 아이콘 탭 -->
+                  <%-- Bootstrap 아이콘 탭: 기존 Bootstrap 아이콘이면 해당 클래스 표시 --%>
                   <div id="panel-bi" <%=isImage ? "style='display:none;'" : ""%>>
                     <div class="input-group">
                       <span class="input-group-text"><i id="iconPreview" class="bi <%=isImage ? "bi-star" : businessField.getIcon()%>"></i></span>
@@ -67,7 +71,7 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
                     </div>
                   </div>
 
-                  <!-- 이미지 업로드 탭 -->
+                  <%-- 이미지 업로드 탭: 기존 이미지 경로가 있으면 미리보기 표시 --%>
                   <div id="panel-img" <%=isImage ? "" : "style='display:none;'"%>>
                     <div class="d-flex align-items-center gap-3">
                       <input type="file" id="iconFile" class="form-control" accept="image/*" style="max-width:320px;" onchange="previewImgIcon(this)">
@@ -109,10 +113,12 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
   </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <script src="css_admin/assets/js/main.js"></script>
+  <%-- 아이콘 피커 모달 (Bootstrap 아이콘 목록 + 검색) --%>
   <jsp:include page="../icon_picker_modal.jsp"/>
   <script>
-  var currentTab = '<%=isImage ? "img" : "bi"%>';
+  var currentTab = '<%=isImage ? "img" : "bi"%>'; // 기존 아이콘 유형에 따라 초기 탭 설정
 
+  /** 탭 전환: Bootstrap 아이콘 ↔ 이미지 업로드 */
   function switchTab(tab) {
     currentTab = tab;
     document.getElementById('panel-bi').style.display  = tab === 'bi'  ? '' : 'none';
@@ -124,10 +130,12 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
     }
   }
 
+  /** Bootstrap 아이콘 클래스 입력 시 왼쪽 미리보기 갱신 */
   function previewBiIcon(val) {
     document.getElementById('iconPreview').className = 'bi ' + val.trim();
   }
 
+  /** 이미지 파일 선택 시 미리보기 표시 */
   function previewImgIcon(input) {
     var file = input.files[0];
     if (!file) return;
@@ -140,6 +148,12 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
     reader.readAsDataURL(file);
   }
 
+  /**
+   * 비즈니스 필드 수정
+   * - FormData + multipart 방식으로 전송
+   * - 이미지 탭에서 파일 미선택 시 iconFile 미포함 → 서버에서 기존 아이콘 유지
+   * - Bootstrap 탭이면 icon 파라미터만 전송
+   */
   function goUpdate() {
     var businessFieldId = $('#businessFieldId').val();
     var title           = $('#title').val().trim();
@@ -157,8 +171,7 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
 
     if (currentTab === 'img') {
       var file = document.getElementById('iconFile').files[0];
-      if (file) fd.append('iconFile', file);
-      // 파일 없으면 기존 유지 (서버에서 처리)
+      if (file) fd.append('iconFile', file); // 파일 없으면 서버에서 기존 아이콘 유지
     } else {
       var icon = $('#icon').val().trim();
       if (!icon) { alert("아이콘을 선택해주세요."); return; }
@@ -169,8 +182,8 @@ boolean isImage = businessField.getIcon() != null && !businessField.getIcon().st
       type: "POST",
       url: "admin.windy?mode=business_field_update",
       data: fd,
-      processData: false,
-      contentType: false,
+      processData: false, // FormData는 jQuery가 직렬화하지 않도록 설정
+      contentType: false, // multipart/form-data 자동 설정
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {

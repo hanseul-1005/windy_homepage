@@ -1,3 +1,5 @@
+<%-- 비즈니스 필드 목록 관리 페이지 --%>
+<%-- sort_order 오름차순으로 표시되며, 제목/내용 클릭 시 수정 페이지로 이동 --%>
 <%@page import="windy.homepage.model.BusinessFieldModel"%>
 <%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
@@ -66,14 +68,16 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
                   <tr>
                     <td style="vertical-align: middle;"><%=bf.getSortOrder()%></td>
                     <td style="vertical-align: middle;">
-                    <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
-                      <i class="bi <%=bf.getIcon()%>" style="font-size:1.3rem;"></i>
-                      <small class="d-block text-muted"><%=bf.getIcon()%></small>
-                    <%} else {%>
-                      <img src="<%=bf.getIcon()%>" style="height:36px; width:36px; object-fit:contain;">
-                      <small class="d-block text-muted">이미지</small>
-                    <%}%>
+                      <%-- icon 값이 "bi-"로 시작하면 Bootstrap 아이콘, 아니면 업로드 이미지 --%>
+                      <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
+                        <i class="bi <%=bf.getIcon()%>" style="font-size:1.3rem;"></i>
+                        <small class="d-block text-muted"><%=bf.getIcon()%></small>
+                      <%} else {%>
+                        <img src="<%=bf.getIcon()%>" style="height:36px; width:36px; object-fit:contain;">
+                        <small class="d-block text-muted">이미지</small>
+                      <%}%>
                     </td>
+                    <%-- 제목/내용 클릭 시 수정 페이지 이동 --%>
                     <td style="vertical-align: middle; cursor: pointer;"
                         onclick="location.href='admin.windy?menu=business_field_modify&businessFieldId=<%=bf.getBusinessFieldId()%>'">
                       <%=bf.getTitle()%>
@@ -108,6 +112,10 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
   <script src="css_admin/assets/vendor/simple-datatables/simple-datatables.js"></script>
   <script src="css_admin/assets/js/main.js"></script>
   <script>
+  /**
+   * 비즈니스 필드 삭제
+   * - 확인 후 AJAX POST 요청으로 삭제, 성공 시 목록 새로고침
+   */
   function goDelete(businessFieldId) {
     if (!confirm("삭제하시겠습니까?")) return;
     $.ajax({

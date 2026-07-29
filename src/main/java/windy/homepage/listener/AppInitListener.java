@@ -10,8 +10,10 @@ import javax.servlet.annotation.WebListener;
 @WebListener
 public class AppInitListener implements ServletContextListener {
 
+    // 업로드 파일을 저장할 서브디렉토리 목록 - 앱 시작 시 자동 생성 (WAR 외부 경로에 생성됨)
     private static final String[] UPLOAD_SUBDIRS = {
-        "certification", "portfolio", "product", "press", "board", "popup", "business_field"
+        "certification", "portfolio", "product", "press", "board", "popup",
+        "business_field" // Business Field 아이콘 이미지 업로드 디렉토리
     };
 
     @Override

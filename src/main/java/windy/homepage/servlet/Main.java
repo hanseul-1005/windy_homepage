@@ -63,7 +63,7 @@ public class Main extends HttpServlet {
             List<PortfolioModel>    listPortfolio    = portfolioDAO.selectListPortfolio();
             List<NoticeModel>       listNotice       = noticeDAO.selectListNotice();
             List<VideoModel>        listVideo        = videoDAO.selectListVideo();
-            List<BusinessFieldModel> listBusinessField = businessFieldDAO.selectListBusinessField();
+            List<BusinessFieldModel> listBusinessField = businessFieldDAO.selectListBusinessField(); // 메인 Business Field 카드 목록
             request.setAttribute("listPortfolio", listPortfolio);
             request.setAttribute("listNotice", listNotice);
             request.setAttribute("listVideo", listVideo);

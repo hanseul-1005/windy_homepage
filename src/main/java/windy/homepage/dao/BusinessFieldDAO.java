@@ -11,6 +11,11 @@ import java.util.List;
 import windy.homepage.model.BusinessFieldModel;
 import windy.homepage.model.DatabaseModel;
 
+/**
+ * 비즈니스 필드(Business Field) DAO
+ * - 홈페이지 메인의 Business Field 섹션 카드 목록을 DB에서 관리
+ * - icon 컬럼은 Bootstrap 아이콘 클래스(bi-xxx) 또는 업로드 이미지 경로를 저장
+ */
 public class BusinessFieldDAO {
 
     private Connection        connection = null;
@@ -23,6 +28,7 @@ public class BusinessFieldDAO {
     private String user     = dbModel.getUser();
     private String password = dbModel.getPassword();
 
+    /** 비즈니스 필드 전체 목록 조회 - sort_order 오름차순, 동일하면 ID 오름차순 */
     public List<BusinessFieldModel> selectListBusinessField() {
         List<BusinessFieldModel> list = new ArrayList<>();
         try {
@@ -50,6 +56,7 @@ public class BusinessFieldDAO {
         return list;
     }
 
+    /** 비즈니스 필드 단건 조회 - 수정 화면 진입 시 사용 */
     public BusinessFieldModel selectBusinessField(int businessFieldId) {
         BusinessFieldModel model = new BusinessFieldModel();
         try {
@@ -76,6 +83,7 @@ public class BusinessFieldDAO {
         return model;
     }
 
+    /** 비즈니스 필드 등록 */
     public int insertBusinessField(BusinessFieldModel model) {
         int result = -1;
         try {
@@ -96,6 +104,7 @@ public class BusinessFieldDAO {
         return result;
     }
 
+    /** 비즈니스 필드 수정 (아이콘 포함 전체 업데이트) */
     public int updateBusinessField(BusinessFieldModel model) {
         int result = -1;
         try {
@@ -117,6 +126,10 @@ public class BusinessFieldDAO {
         return result;
     }
 
+    /**
+     * 비즈니스 필드 수정 (아이콘 제외)
+     * - 이미지 업로드 탭에서 새 파일을 선택하지 않은 경우 기존 아이콘을 유지하기 위해 사용
+     */
     public int updateBusinessFieldNoIcon(BusinessFieldModel model) {
         int result = -1;
         try {
@@ -137,6 +150,7 @@ public class BusinessFieldDAO {
         return result;
     }
 
+    /** 비즈니스 필드 삭제 */
     public int deleteBusinessField(int businessFieldId) {
         int result = -1;
         try {
@@ -154,6 +168,7 @@ public class BusinessFieldDAO {
         return result;
     }
 
+    /** DB 리소스 일괄 반환 */
     public void close(ResultSet rs, PreparedStatement pstmt, Connection conn) {
         if (rs != null)   { try { rs.close();   } catch (SQLException e) { e.printStackTrace(); } }
         if (pstmt != null){ try { pstmt.close(); } catch (SQLException e) { e.printStackTrace(); } }
