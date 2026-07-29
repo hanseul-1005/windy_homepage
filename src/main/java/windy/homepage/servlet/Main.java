@@ -78,6 +78,8 @@ public class Main extends HttpServlet {
             dispatcher.forward(request, response);
 
         } else if ("service_info".equals(menu)) {
+            // Business Field 카드 목록을 동적으로 표시
+            request.setAttribute("listBusinessField", businessFieldDAO.selectListBusinessField());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/service_info.jsp");
             dispatcher.forward(request, response);
 
