@@ -2,6 +2,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 BusinessFieldModel businessField = (BusinessFieldModel) request.getAttribute("businessField");
+boolean isImage = businessField.getIcon() != null && !businessField.getIcon().startsWith("bi-");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -43,16 +44,41 @@ BusinessFieldModel businessField = (BusinessFieldModel) request.getAttribute("bu
                 <button type="button" class="btn btn-primary ms-2" onclick="goUpdate()">수정</button>
               </div>
               <input type="hidden" id="businessFieldId" value="<%=businessField.getBusinessFieldId()%>">
-              <div class="row mb-3">
+
+              <!-- 아이콘 선택 영역 -->
+              <div class="row mb-1">
                 <label class="col-sm-2 col-form-label">아이콘</label>
-                <div class="col-sm-5">
-                  <div class="input-group">
-                    <span class="input-group-text"><i id="iconPreview" class="bi <%=businessField.getIcon()%>"></i></span>
-                    <input type="text" id="icon" class="form-control" value="<%=businessField.getIcon()%>" oninput="previewIcon(this.value)">
-                    <button type="button" class="btn btn-outline-secondary" onclick="openIconPicker()">아이콘 선택</button>
+                <div class="col-sm-8">
+                  <ul class="nav nav-tabs mb-2" id="iconTab">
+                    <li class="nav-item">
+                      <a class="nav-link <%=isImage ? "" : "active"%>" id="tab-bi" href="#" onclick="switchTab('bi'); return false;">Bootstrap 아이콘</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link <%=isImage ? "active" : ""%>" id="tab-img" href="#" onclick="switchTab('img'); return false;">이미지 직접 업로드</a>
+                    </li>
+                  </ul>
+
+                  <!-- Bootstrap 아이콘 탭 -->
+                  <div id="panel-bi" <%=isImage ? "style='display:none;'" : ""%>>
+                    <div class="input-group">
+                      <span class="input-group-text"><i id="iconPreview" class="bi <%=isImage ? "bi-star" : businessField.getIcon()%>"></i></span>
+                      <input type="text" id="icon" class="form-control" value="<%=isImage ? "bi-star" : businessField.getIcon()%>" oninput="previewBiIcon(this.value)">
+                      <button type="button" class="btn btn-outline-secondary" onclick="openIconPicker()">아이콘 선택</button>
+                    </div>
+                  </div>
+
+                  <!-- 이미지 업로드 탭 -->
+                  <div id="panel-img" <%=isImage ? "" : "style='display:none;'"%>>
+                    <div class="d-flex align-items-center gap-3">
+                      <input type="file" id="iconFile" class="form-control" accept="image/*" style="max-width:320px;" onchange="previewImgIcon(this)">
+                      <img id="imgPreview" src="<%=isImage ? businessField.getIcon() : ""%>"
+                           style="<%=isImage ? "" : "display:none;"%> height:48px; width:48px; object-fit:contain; border:1px solid #dee2e6; border-radius:6px; padding:4px;">
+                    </div>
+                    <small class="text-muted">새 이미지를 선택하지 않으면 기존 이미지 유지</small>
                   </div>
                 </div>
               </div>
+
               <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">제목</label>
                 <div class="col-sm-5">
@@ -85,26 +111,66 @@ BusinessFieldModel businessField = (BusinessFieldModel) request.getAttribute("bu
   <script src="css_admin/assets/js/main.js"></script>
   <jsp:include page="../icon_picker_modal.jsp"/>
   <script>
-  function previewIcon(val) {
-    var el = document.getElementById('iconPreview');
-    el.className = 'bi ' + val.trim();
+  var currentTab = '<%=isImage ? "img" : "bi"%>';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('panel-bi').style.display  = tab === 'bi'  ? '' : 'none';
+    document.getElementById('panel-img').style.display = tab === 'img' ? '' : 'none';
+    document.getElementById('tab-bi').classList.toggle('active',  tab === 'bi');
+    document.getElementById('tab-img').classList.toggle('active', tab === 'img');
+    if (tab === 'bi') {
+      document.getElementById('iconFile').value = '';
+    }
+  }
+
+  function previewBiIcon(val) {
+    document.getElementById('iconPreview').className = 'bi ' + val.trim();
+  }
+
+  function previewImgIcon(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = document.getElementById('imgPreview');
+      img.src = e.target.result;
+      img.style.display = 'inline-block';
+    };
+    reader.readAsDataURL(file);
   }
 
   function goUpdate() {
     var businessFieldId = $('#businessFieldId').val();
-    var icon            = $('#icon').val().trim();
     var title           = $('#title').val().trim();
     var content         = $('#content').val().trim();
     var sortOrder       = $('#sortOrder').val();
 
-    if (!icon)    { alert("아이콘을 입력해주세요."); return; }
     if (!title)   { alert("제목을 입력해주세요."); return; }
     if (!content) { alert("내용을 입력해주세요."); return; }
+
+    var fd = new FormData();
+    fd.append('businessFieldId', businessFieldId);
+    fd.append('title',           title);
+    fd.append('content',         content);
+    fd.append('sortOrder',       sortOrder);
+
+    if (currentTab === 'img') {
+      var file = document.getElementById('iconFile').files[0];
+      if (file) fd.append('iconFile', file);
+      // 파일 없으면 기존 유지 (서버에서 처리)
+    } else {
+      var icon = $('#icon').val().trim();
+      if (!icon) { alert("아이콘을 선택해주세요."); return; }
+      fd.append('icon', icon);
+    }
 
     $.ajax({
       type: "POST",
       url: "admin.windy?mode=business_field_update",
-      data: { businessFieldId: businessFieldId, icon: icon, title: title, content: content, sortOrder: sortOrder },
+      data: fd,
+      processData: false,
+      contentType: false,
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {

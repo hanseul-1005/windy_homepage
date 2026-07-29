@@ -319,10 +319,19 @@ public class Admin extends HttpServlet {
             objResult.put("result", result > 0 ? "true" : "false");
 
         } else if ("business_field_add".equals(mode)) {
-            String icon      = request.getParameter("icon");
             String title     = request.getParameter("title");
             String content   = request.getParameter("content");
             int    sortOrder = Integer.parseInt(request.getParameter("sortOrder"));
+
+            String icon;
+            Part iconFilePart = request.getPart("iconFile");
+            if (iconFilePart != null && iconFilePart.getSize() > 0) {
+                String fileName = saveUploadFile(iconFilePart, "business_field");
+                icon = (fileName != null) ? "uploads/business_field/" + fileName : "bi-star";
+            } else {
+                icon = request.getParameter("icon");
+                if (icon == null || icon.trim().isEmpty()) icon = "bi-star";
+            }
 
             BusinessFieldModel model = new BusinessFieldModel();
             model.setIcon(icon);
@@ -335,19 +344,33 @@ public class Admin extends HttpServlet {
 
         } else if ("business_field_update".equals(mode)) {
             int    businessFieldId = Integer.parseInt(request.getParameter("businessFieldId"));
-            String icon            = request.getParameter("icon");
             String title           = request.getParameter("title");
             String content         = request.getParameter("content");
             int    sortOrder       = Integer.parseInt(request.getParameter("sortOrder"));
 
+            String icon;
+            Part iconFilePart = request.getPart("iconFile");
+            if (iconFilePart != null && iconFilePart.getSize() > 0) {
+                String fileName = saveUploadFile(iconFilePart, "business_field");
+                icon = (fileName != null) ? "uploads/business_field/" + fileName : null;
+            } else {
+                icon = request.getParameter("icon");
+            }
+
             BusinessFieldModel model = new BusinessFieldModel();
             model.setBusinessFieldId(businessFieldId);
-            model.setIcon(icon);
             model.setTitle(title);
             model.setContent(content);
             model.setSortOrder(sortOrder);
 
-            int result = businessFieldDAO.updateBusinessField(model);
+            int result;
+            if (icon != null && !icon.trim().isEmpty()) {
+                model.setIcon(icon);
+                result = businessFieldDAO.updateBusinessField(model);
+            } else {
+                // 이미지 탭에서 파일 미선택 → 아이콘 제외 나머지만 업데이트
+                result = businessFieldDAO.updateBusinessFieldNoIcon(model);
+            }
             objResult.put("result", result > 0 ? "true" : "false");
 
         } else if ("business_field_delete".equals(mode)) {

@@ -38,16 +38,40 @@
                 <button type="button" class="btn btn-outline-secondary" onclick="location.href='admin.windy?menu=business_field_list'">목록</button>
                 <button type="button" class="btn btn-primary ms-2" onclick="goAdd()">등록</button>
               </div>
-              <div class="row mb-3">
+
+              <!-- 아이콘 선택 영역 -->
+              <div class="row mb-1">
                 <label class="col-sm-2 col-form-label">아이콘</label>
-                <div class="col-sm-5">
-                  <div class="input-group">
-                    <span class="input-group-text"><i id="iconPreview" class="bi bi-star"></i></span>
-                    <input type="text" id="icon" class="form-control" placeholder="예) bi-activity" value="bi-star" oninput="previewIcon(this.value)">
-                    <button type="button" class="btn btn-outline-secondary" onclick="openIconPicker()">아이콘 선택</button>
+                <div class="col-sm-8">
+                  <ul class="nav nav-tabs mb-2" id="iconTab">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="tab-bi" href="#" onclick="switchTab('bi'); return false;">Bootstrap 아이콘</a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="tab-img" href="#" onclick="switchTab('img'); return false;">이미지 직접 업로드</a>
+                    </li>
+                  </ul>
+
+                  <!-- Bootstrap 아이콘 탭 -->
+                  <div id="panel-bi">
+                    <div class="input-group">
+                      <span class="input-group-text"><i id="iconPreview" class="bi bi-star"></i></span>
+                      <input type="text" id="icon" class="form-control" value="bi-star" oninput="previewBiIcon(this.value)">
+                      <button type="button" class="btn btn-outline-secondary" onclick="openIconPicker()">아이콘 선택</button>
+                    </div>
+                  </div>
+
+                  <!-- 이미지 업로드 탭 -->
+                  <div id="panel-img" style="display:none;">
+                    <div class="d-flex align-items-center gap-3">
+                      <input type="file" id="iconFile" class="form-control" accept="image/*" style="max-width:320px;" onchange="previewImgIcon(this)">
+                      <img id="imgPreview" src="" alt="" style="display:none; height:48px; width:48px; object-fit:contain; border:1px solid #dee2e6; border-radius:6px; padding:4px;">
+                    </div>
+                    <small class="text-muted">PNG, JPG, SVG 권장 (정사각형 이미지)</small>
                   </div>
                 </div>
               </div>
+
               <div class="row mb-3">
                 <label class="col-sm-2 col-form-label">제목</label>
                 <div class="col-sm-5">
@@ -80,25 +104,65 @@
   <script src="css_admin/assets/js/main.js"></script>
   <jsp:include page="../icon_picker_modal.jsp"/>
   <script>
-  function previewIcon(val) {
-    var el = document.getElementById('iconPreview');
-    el.className = 'bi ' + val.trim();
+  var currentTab = 'bi';
+
+  function switchTab(tab) {
+    currentTab = tab;
+    document.getElementById('panel-bi').style.display  = tab === 'bi'  ? '' : 'none';
+    document.getElementById('panel-img').style.display = tab === 'img' ? '' : 'none';
+    document.getElementById('tab-bi').classList.toggle('active',  tab === 'bi');
+    document.getElementById('tab-img').classList.toggle('active', tab === 'img');
+    if (tab === 'bi') {
+      document.getElementById('iconFile').value = '';
+      document.getElementById('imgPreview').style.display = 'none';
+    }
+  }
+
+  function previewBiIcon(val) {
+    document.getElementById('iconPreview').className = 'bi ' + val.trim();
+  }
+
+  function previewImgIcon(input) {
+    var file = input.files[0];
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = document.getElementById('imgPreview');
+      img.src = e.target.result;
+      img.style.display = 'inline-block';
+    };
+    reader.readAsDataURL(file);
   }
 
   function goAdd() {
-    var icon      = $('#icon').val().trim();
     var title     = $('#title').val().trim();
     var content   = $('#content').val().trim();
     var sortOrder = $('#sortOrder').val();
 
-    if (!icon)      { alert("아이콘을 입력해주세요."); return; }
-    if (!title)     { alert("제목을 입력해주세요."); return; }
-    if (!content)   { alert("내용을 입력해주세요."); return; }
+    if (!title)   { alert("제목을 입력해주세요."); return; }
+    if (!content) { alert("내용을 입력해주세요."); return; }
+
+    var fd = new FormData();
+    fd.append('title',     title);
+    fd.append('content',   content);
+    fd.append('sortOrder', sortOrder);
+
+    if (currentTab === 'img') {
+      var file = document.getElementById('iconFile').files[0];
+      if (!file) { alert("이미지를 선택해주세요."); return; }
+      fd.append('iconFile', file);
+    } else {
+      var icon = $('#icon').val().trim();
+      if (!icon) { alert("아이콘을 선택해주세요."); return; }
+      fd.append('icon', icon);
+    }
 
     $.ajax({
       type: "POST",
       url: "admin.windy?mode=business_field_add",
-      data: { icon: icon, title: title, content: content, sortOrder: sortOrder },
+      data: fd,
+      processData: false,
+      contentType: false,
       dataType: "json",
       success: function(ret) {
         if (ret.result === "true") {

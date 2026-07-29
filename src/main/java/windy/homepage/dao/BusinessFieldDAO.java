@@ -117,6 +117,26 @@ public class BusinessFieldDAO {
         return result;
     }
 
+    public int updateBusinessFieldNoIcon(BusinessFieldModel model) {
+        int result = -1;
+        try {
+            Class.forName(dbDriver);
+            connection = DriverManager.getConnection(jdbcUrl, user, password);
+            pstmt = connection.prepareStatement(
+                "UPDATE business_field SET title=?, content=?, sort_order=? WHERE business_field_id=?");
+            pstmt.setString(1, model.getTitle());
+            pstmt.setString(2, model.getContent());
+            pstmt.setInt(3, model.getSortOrder());
+            pstmt.setInt(4, model.getBusinessFieldId());
+            result = pstmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            close(rs, pstmt, connection);
+        }
+        return result;
+    }
+
     public int deleteBusinessField(int businessFieldId) {
         int result = -1;
         try {

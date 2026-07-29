@@ -66,8 +66,13 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
                   <tr>
                     <td style="vertical-align: middle;"><%=bf.getSortOrder()%></td>
                     <td style="vertical-align: middle;">
+                    <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
                       <i class="bi <%=bf.getIcon()%>" style="font-size:1.3rem;"></i>
                       <small class="d-block text-muted"><%=bf.getIcon()%></small>
+                    <%} else {%>
+                      <img src="<%=bf.getIcon()%>" style="height:36px; width:36px; object-fit:contain;">
+                      <small class="d-block text-muted">이미지</small>
+                    <%}%>
                     </td>
                     <td style="vertical-align: middle; cursor: pointer;"
                         onclick="location.href='admin.windy?menu=business_field_modify&businessFieldId=<%=bf.getBusinessFieldId()%>'">

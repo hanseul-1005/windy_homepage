@@ -209,7 +209,11 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
           <div class="col-lg-4" data-aos="fade-up" data-aos-delay="<%=delay%>">
             <div class="service-card d-flex">
               <div class="icon flex-shrink-0">
-                <i class="bi <%=bf.getIcon()%>"></i>
+                <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
+                  <i class="bi <%=bf.getIcon()%>"></i>
+                <%} else {%>
+                  <img src="<%=bf.getIcon()%>" style="width:40px; height:40px; object-fit:contain;">
+                <%}%>
               </div>
               <div>
                 <h3><%=bf.getTitle()%></h3>
