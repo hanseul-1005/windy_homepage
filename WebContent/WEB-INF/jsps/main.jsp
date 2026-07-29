@@ -197,41 +197,101 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
         <!-- <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p> -->
       </div><!-- End Section Title -->
 
+      <%-- 좌우 화살표 버튼을 카드 영역 바깥에 배치, 2열×3행 Swiper --%>
       <div class="container" data-aos="fade-up" data-aos-delay="100">
+        <div class="bf-slider-wrap">
 
-        <div class="row g-4">
+          <%-- 이전 페이지 화살표 --%>
+          <button class="bf-arrow bf-arrow-prev" aria-label="이전">&#8249;</button>
 
-        <%-- DB에서 조회한 Business Field 목록을 2열 그리드로 동적 렌더링 --%>
-        <%-- icon이 "bi-"로 시작하면 Bootstrap 아이콘(<i>), 아니면 업로드 이미지(<img>) --%>
-        <%
-        if (listBusinessField != null && !listBusinessField.isEmpty()) {
-            int delay = 100;
-            for (BusinessFieldModel bf : listBusinessField) {
-        %>
-          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<%=delay%>">
-            <div class="service-card d-flex">
-              <div class="icon flex-shrink-0">
-                <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
-                  <i class="bi <%=bf.getIcon()%>"></i>
-                <%} else {%>
-                  <img src="<%=bf.getIcon()%>" style="width:40px; height:40px; object-fit:contain;">
-                <%}%>
+          <div class="swiper bf-swiper">
+            <div class="swiper-wrapper">
+
+            <%-- icon이 "bi-"로 시작하면 Bootstrap 아이콘(<i>), 아니면 업로드 이미지(<img>) --%>
+            <%
+            if (listBusinessField != null && !listBusinessField.isEmpty()) {
+                for (BusinessFieldModel bf : listBusinessField) {
+            %>
+              <div class="swiper-slide">
+                <div class="service-card bf-card d-flex">
+                  <div class="icon flex-shrink-0">
+                    <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
+                      <i class="bi <%=bf.getIcon()%>"></i>
+                    <%} else {%>
+                      <img src="<%=bf.getIcon()%>" style="width:34px; height:34px; object-fit:contain;">
+                    <%}%>
+                  </div>
+                  <div>
+                    <h3><%=bf.getTitle()%></h3>
+                    <p><%=bf.getContent()%></p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <h3><%=bf.getTitle()%></h3>
-                <p><%=bf.getContent()%></p>
-              </div>
+            <%
+                }
+            }
+            %>
+
             </div>
           </div>
-        <%
-                delay += 100;
-            }
-        }
-        %>
+
+          <%-- 다음 페이지 화살표 --%>
+          <button class="bf-arrow bf-arrow-next" aria-label="다음">&#8250;</button>
 
         </div>
-
       </div>
+
+      <style>
+      /* Business Field 슬라이더 래퍼 — 좌우 화살표 공간 확보 */
+      .bf-slider-wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .bf-swiper {
+        flex: 1;
+        min-width: 0;
+      }
+      /* 카드 사이즈 소폭 축소 */
+      .bf-card {
+        padding: 18px 16px !important;
+        gap: 14px;
+      }
+      .bf-card .icon {
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 1.4rem !important;
+      }
+      .bf-card h3 {
+        font-size: 1rem !important;
+        margin-bottom: 4px !important;
+      }
+      .bf-card p {
+        font-size: 0.82rem !important;
+        margin-bottom: 0 !important;
+        line-height: 1.5 !important;
+      }
+      /* 화살표 버튼 스타일 */
+      .bf-arrow {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        border: 1px solid #d0d0d0;
+        border-radius: 50%;
+        background: #fff;
+        color: #444;
+        font-size: 1.6rem;
+        line-height: 1;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background .2s, border-color .2s;
+        padding: 0;
+      }
+      .bf-arrow:hover { background: #f0f4ff; border-color: #86b7fe; color: #0d6efd; }
+      .bf-arrow:disabled { opacity: 0.3; cursor: default; }
+      </style>
 
     </section><!-- /Services Section -->
 
@@ -473,6 +533,26 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
   <!-- Main JS File -->
   <script src="css_main/assets/js/main.js"></script>
   <script>
+  /* Business Field 2열×3행 Swiper — 화살표는 카드 영역 바깥 */
+  (function() {
+    var swiper = new Swiper('.bf-swiper', {
+      slidesPerView: 2,
+      grid: { rows: 3, fill: 'row' },
+      spaceBetween: 16
+    });
+    var prevBtn = document.querySelector('.bf-arrow-prev');
+    var nextBtn = document.querySelector('.bf-arrow-next');
+    function updateArrows() {
+      prevBtn.disabled = swiper.isBeginning;
+      nextBtn.disabled = swiper.isEnd;
+    }
+    prevBtn.addEventListener('click', function() { swiper.slidePrev(); });
+    nextBtn.addEventListener('click', function() { swiper.slideNext(); });
+    swiper.on('slideChange', updateArrows);
+    swiper.on('init', updateArrows);
+    updateArrows();
+  })();
+
   function openVideoModal(ytId, title) {
     if (!ytId) return;
     var modalEl = document.getElementById('videoModal');
