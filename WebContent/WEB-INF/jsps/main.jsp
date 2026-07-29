@@ -518,7 +518,7 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
   (function() {
     var swiper = new Swiper('.bf-swiper', {
       slidesPerView: 2,
-      grid: { rows: 3, fill: 'row' },
+      grid: { rows: 2, fill: 'row' },
       spaceBetween: 16
     });
     var prevBtn = document.querySelector('.bf-arrow-prev');
