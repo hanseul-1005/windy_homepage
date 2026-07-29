@@ -11,7 +11,7 @@ import javax.servlet.annotation.WebListener;
 public class AppInitListener implements ServletContextListener {
 
     private static final String[] UPLOAD_SUBDIRS = {
-        "certification", "portfolio", "product", "press", "board", "popup"
+        "certification", "portfolio", "product", "press", "board", "popup", "business_field"
     };
 
     @Override
