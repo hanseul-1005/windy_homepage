@@ -197,41 +197,38 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
         <!-- <p>Necessitatibus eius consequatur ex aliquid fuga eum quidem sint consectetur velit</p> -->
       </div><!-- End Section Title -->
 
-      <%-- 2열×3행 Swiper 캐러셀 — 6개 초과 시 < > 화살표로 페이지 이동 --%>
       <div class="container" data-aos="fade-up" data-aos-delay="100">
 
-        <div class="swiper bf-swiper">
-          <div class="swiper-wrapper">
+        <div class="row g-4">
 
-          <%-- icon이 "bi-"로 시작하면 Bootstrap 아이콘(<i>), 아니면 업로드 이미지(<img>) --%>
-          <%
-          if (listBusinessField != null && !listBusinessField.isEmpty()) {
-              for (BusinessFieldModel bf : listBusinessField) {
-          %>
-            <div class="swiper-slide">
-              <div class="service-card d-flex h-100">
-                <div class="icon flex-shrink-0">
-                  <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
-                    <i class="bi <%=bf.getIcon()%>"></i>
-                  <%} else {%>
-                    <img src="<%=bf.getIcon()%>" style="width:40px; height:40px; object-fit:contain;">
-                  <%}%>
-                </div>
-                <div>
-                  <h3><%=bf.getTitle()%></h3>
-                  <p><%=bf.getContent()%></p>
-                </div>
+        <%-- DB에서 조회한 Business Field 목록을 2열 그리드로 동적 렌더링 --%>
+        <%-- icon이 "bi-"로 시작하면 Bootstrap 아이콘(<i>), 아니면 업로드 이미지(<img>) --%>
+        <%
+        if (listBusinessField != null && !listBusinessField.isEmpty()) {
+            int delay = 100;
+            for (BusinessFieldModel bf : listBusinessField) {
+        %>
+          <div class="col-lg-6" data-aos="fade-up" data-aos-delay="<%=delay%>">
+            <div class="service-card d-flex">
+              <div class="icon flex-shrink-0">
+                <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
+                  <i class="bi <%=bf.getIcon()%>"></i>
+                <%} else {%>
+                  <img src="<%=bf.getIcon()%>" style="width:40px; height:40px; object-fit:contain;">
+                <%}%>
+              </div>
+              <div>
+                <h3><%=bf.getTitle()%></h3>
+                <p><%=bf.getContent()%></p>
               </div>
             </div>
-          <%
-              }
-          }
-          %>
-
           </div>
-          <%-- 이전/다음 페이지 화살표 버튼 --%>
-          <div class="swiper-button-prev"></div>
-          <div class="swiper-button-next"></div>
+        <%
+                delay += 100;
+            }
+        }
+        %>
+
         </div>
 
       </div>
@@ -476,17 +473,6 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
   <!-- Main JS File -->
   <script src="css_main/assets/js/main.js"></script>
   <script>
-  /* Business Field 2열×3행 Swiper — 카드 6개 단위로 페이지 전환 */
-  new Swiper('.bf-swiper', {
-    slidesPerView: 2,
-    grid: { rows: 3, fill: 'row' },
-    spaceBetween: 24,
-    navigation: {
-      nextEl: '.bf-swiper .swiper-button-next',
-      prevEl: '.bf-swiper .swiper-button-prev',
-    }
-  });
-
   function openVideoModal(ytId, title) {
     if (!ytId) return;
     var modalEl = document.getElementById('videoModal');
