@@ -37,6 +37,13 @@ String menu = (String) request.getParameter("menu");
       </li>
 
       <li class="nav-item">
+        <a class="nav-link <%if(!"portfolio_category_list".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=portfolio_category_list">
+          <i class="bi bi-tags"></i>
+          <span>Portfolio Category</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link <%if(!"portfolio_list".equals(menu) && !"portfolio_add".equals(menu) && !"portfolio_modify".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=portfolio_list">
           <i class="bi bi-journal-text"></i>
           <span>Portfolio</span>

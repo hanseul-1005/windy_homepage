@@ -1,8 +1,12 @@
+<%@page import="windy.homepage.model.PortfolioCategoryModel"%>
 <%@page import="windy.homepage.model.PortfolioImageModel"%>
 <%@page import="windy.homepage.model.PortfolioModel"%>
+<%@page import="java.util.List"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
 PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
+@SuppressWarnings("unchecked")
+List<PortfolioCategoryModel> listCategory = (List<PortfolioCategoryModel>) request.getAttribute("listCategory");
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -93,10 +97,10 @@ PortfolioModel portfolio = (PortfolioModel) request.getAttribute("portfolio");
                   <label class="col-sm-2 col-form-label">카테고리</label>
                   <div class="col-sm-10">
                     <select id="category" class="form-select">
-                      <option value="AI"<%="AI".equals(portfolio.getCategory()) ? " selected" : ""%>>AI</option>
-                      <option value="Data"<%="Data".equals(portfolio.getCategory()) ? " selected" : ""%>>Data</option>
-                      <option value="Vision"<%="Vision".equals(portfolio.getCategory()) ? " selected" : ""%>>Vision</option>
-                      <option value="Monitoring"<%="Monitoring".equals(portfolio.getCategory()) ? " selected" : ""%>>Monitoring</option>
+                      <%-- DB에서 조회한 카테고리 목록 동적 표시, 기존 카테고리 selected 처리 --%>
+                      <%if (listCategory != null) { for (PortfolioCategoryModel c : listCategory) {%>
+                      <option value="<%=c.getName()%>"<%=c.getName().equals(portfolio.getCategory()) ? " selected" : ""%>><%=c.getName()%></option>
+                      <%}}%>
                     </select>
                   </div>
                 </div>

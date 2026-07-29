@@ -26,6 +26,7 @@ import windy.homepage.dao.CertificationDAO;
 import windy.homepage.dao.ContactDAO;
 import windy.homepage.dao.HistoryDAO;
 import windy.homepage.dao.NoticeDAO;
+import windy.homepage.dao.PortfolioCategoryDAO;
 import windy.homepage.dao.PortfolioDAO;
 import windy.homepage.dao.PressDAO;
 import windy.homepage.dao.ProductDAO;
@@ -38,6 +39,7 @@ import windy.homepage.model.CertificationModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.HistoryModel;
 import windy.homepage.model.NoticeModel;
+import windy.homepage.model.PortfolioCategoryModel;
 import windy.homepage.model.PortfolioModel;
 import windy.homepage.model.PressModel;
 import windy.homepage.model.ProductModel;
@@ -60,15 +62,16 @@ public class Admin extends HttpServlet {
         String menu = request.getParameter("menu");
         if (menu == null) menu = "main";
 
-        NoticeDAO          noticeDAO        = new NoticeDAO();
-        ContactDAO         contactDAO       = new ContactDAO();
-        HistoryDAO         historyDAO       = new HistoryDAO();
-        CertificationDAO   certDAO          = new CertificationDAO();
-        PortfolioDAO       portfolioDAO     = new PortfolioDAO();
-        ProductDAO         productDAO       = new ProductDAO();
-        PressDAO           pressDAO         = new PressDAO();
-        VideoDAO           videoDAO         = new VideoDAO();
-        BusinessFieldDAO   businessFieldDAO = new BusinessFieldDAO();
+        NoticeDAO            noticeDAO            = new NoticeDAO();
+        ContactDAO           contactDAO           = new ContactDAO();
+        HistoryDAO           historyDAO           = new HistoryDAO();
+        CertificationDAO     certDAO              = new CertificationDAO();
+        PortfolioDAO         portfolioDAO         = new PortfolioDAO();
+        PortfolioCategoryDAO portfolioCategoryDAO = new PortfolioCategoryDAO();
+        ProductDAO           productDAO           = new ProductDAO();
+        PressDAO             pressDAO             = new PressDAO();
+        VideoDAO             videoDAO             = new VideoDAO();
+        BusinessFieldDAO     businessFieldDAO     = new BusinessFieldDAO();
 
         if ("main".equals(menu)) {
             request.setAttribute("listNotice",    noticeDAO.selectListNotice());
@@ -97,18 +100,28 @@ public class Admin extends HttpServlet {
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/notice/notice_modify.jsp");
             dispatcher.forward(request, response);
 
+        } else if ("portfolio_category_list".equals(menu)) {
+            // ── Portfolio Category 관리 ──
+            request.setAttribute("listCategory", portfolioCategoryDAO.selectListCategory());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/portfolio/portfolio_category_list.jsp");
+            dispatcher.forward(request, response);
+
         } else if ("portfolio_list".equals(menu)) {
             request.setAttribute("listPortfolio", portfolioDAO.selectListPortfolio());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/portfolio/portfolio_list.jsp");
             dispatcher.forward(request, response);
 
         } else if ("portfolio_add".equals(menu)) {
+            // 카테고리 목록을 드롭다운에 동적 표시
+            request.setAttribute("listCategory", portfolioCategoryDAO.selectListCategory());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/portfolio/portfolio_add.jsp");
             dispatcher.forward(request, response);
 
         } else if ("portfolio_modify".equals(menu)) {
             int portfolioId = Integer.parseInt(request.getParameter("portfolioId"));
             request.setAttribute("portfolio", portfolioDAO.selectPortfolio(portfolioId));
+            // 카테고리 목록을 드롭다운에 동적 표시
+            request.setAttribute("listCategory", portfolioCategoryDAO.selectListCategory());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/portfolio/portfolio_modify.jsp");
             dispatcher.forward(request, response);
 
@@ -275,15 +288,16 @@ public class Admin extends HttpServlet {
 
         String mode = request.getParameter("mode");
         NoticeDAO          noticeDAO        = new NoticeDAO();
-        ContactDAO         contactDAO       = new ContactDAO();
-        HistoryDAO         historyDAO       = new HistoryDAO();
-        CertificationDAO   certDAO          = new CertificationDAO();
-        PortfolioDAO       portfolioDAO     = new PortfolioDAO();
-        ProductDAO         productDAO       = new ProductDAO();
-        PressDAO           pressDAO         = new PressDAO();
-        VideoDAO           videoDAO         = new VideoDAO();
-        BusinessFieldDAO   businessFieldDAO = new BusinessFieldDAO();
-        JSONObject         objResult        = new JSONObject();
+        ContactDAO           contactDAO           = new ContactDAO();
+        HistoryDAO           historyDAO           = new HistoryDAO();
+        CertificationDAO     certDAO              = new CertificationDAO();
+        PortfolioDAO         portfolioDAO         = new PortfolioDAO();
+        PortfolioCategoryDAO portfolioCategoryDAO = new PortfolioCategoryDAO();
+        ProductDAO           productDAO           = new ProductDAO();
+        PressDAO             pressDAO             = new PressDAO();
+        VideoDAO             videoDAO             = new VideoDAO();
+        BusinessFieldDAO     businessFieldDAO     = new BusinessFieldDAO();
+        JSONObject           objResult            = new JSONObject();
 
         if ("notice_add".equals(mode)) {
             String title   = request.getParameter("title");
@@ -469,6 +483,32 @@ public class Admin extends HttpServlet {
         } else if ("cert_delete".equals(mode)) {
             int certId = Integer.parseInt(request.getParameter("certId"));
             int result = certDAO.deleteCert(certId);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        // ── Portfolio Category CRUD ──────────────────────────────────────────────
+        } else if ("portfolio_category_add".equals(mode)) {
+            String name      = request.getParameter("name");
+            int    sortOrder = Integer.parseInt(request.getParameter("sortOrder"));
+            PortfolioCategoryModel cat = new PortfolioCategoryModel();
+            cat.setName(name);
+            cat.setSortOrder(sortOrder);
+            int result = portfolioCategoryDAO.insertCategory(cat);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("portfolio_category_update".equals(mode)) {
+            int    categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            String name       = request.getParameter("name");
+            int    sortOrder  = Integer.parseInt(request.getParameter("sortOrder"));
+            PortfolioCategoryModel cat = new PortfolioCategoryModel();
+            cat.setCategoryId(categoryId);
+            cat.setName(name);
+            cat.setSortOrder(sortOrder);
+            int result = portfolioCategoryDAO.updateCategory(cat);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("portfolio_category_delete".equals(mode)) {
+            int categoryId = Integer.parseInt(request.getParameter("categoryId"));
+            int result     = portfolioCategoryDAO.deleteCategory(categoryId);
             objResult.put("result", result > 0 ? "true" : "false");
 
         } else if ("portfolio_add".equals(mode)) {
