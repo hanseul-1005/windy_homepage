@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import windy.homepage.dao.BoardDAO;
+import windy.homepage.dao.BusinessFieldDAO;
 import windy.homepage.dao.PopupDAO;
 import windy.homepage.dao.CertificationDAO;
 import windy.homepage.dao.ContactDAO;
@@ -25,6 +26,7 @@ import windy.homepage.dao.ProductDAO;
 import windy.homepage.dao.VideoDAO;
 import windy.homepage.model.BoardModel;
 import windy.homepage.model.BoardPostModel;
+import windy.homepage.model.BusinessFieldModel;
 import windy.homepage.model.ProductModel;
 import windy.homepage.model.ContactModel;
 import windy.homepage.model.NoticeModel;
@@ -42,27 +44,30 @@ public class Main extends HttpServlet {
         String menu = request.getParameter("menu");
         if (menu == null) menu = "home";
 
-        NoticeDAO        noticeDAO    = new NoticeDAO();
-        ContactDAO       contactDAO   = new ContactDAO();
-        HistoryDAO       historyDAO   = new HistoryDAO();
-        CertificationDAO certDAO      = new CertificationDAO();
-        PortfolioDAO     portfolioDAO = new PortfolioDAO();
-        ProductDAO       productDAO   = new ProductDAO();
-        PressDAO         pressDAO     = new PressDAO();
-        VideoDAO         videoDAO     = new VideoDAO();
-        BoardDAO         boardDAO     = new BoardDAO();
-        PopupDAO         popupDAO     = new PopupDAO();
+        NoticeDAO        noticeDAO         = new NoticeDAO();
+        ContactDAO       contactDAO        = new ContactDAO();
+        HistoryDAO       historyDAO        = new HistoryDAO();
+        CertificationDAO certDAO           = new CertificationDAO();
+        PortfolioDAO     portfolioDAO      = new PortfolioDAO();
+        ProductDAO       productDAO        = new ProductDAO();
+        PressDAO         pressDAO          = new PressDAO();
+        VideoDAO         videoDAO          = new VideoDAO();
+        BoardDAO         boardDAO          = new BoardDAO();
+        PopupDAO         popupDAO          = new PopupDAO();
+        BusinessFieldDAO businessFieldDAO  = new BusinessFieldDAO();
 
         // 동적 게시판 메뉴 (모든 페이지의 top_menu에서 사용)
         request.setAttribute("menuBoards", boardDAO.selectActiveBoards());
 
         if ("home".equals(menu)) {
-            List<PortfolioModel> listPortfolio = portfolioDAO.selectListPortfolio();
-            List<NoticeModel>    listNotice    = noticeDAO.selectListNotice();
-            List<VideoModel>     listVideo     = videoDAO.selectListVideo();
+            List<PortfolioModel>    listPortfolio    = portfolioDAO.selectListPortfolio();
+            List<NoticeModel>       listNotice       = noticeDAO.selectListNotice();
+            List<VideoModel>        listVideo        = videoDAO.selectListVideo();
+            List<BusinessFieldModel> listBusinessField = businessFieldDAO.selectListBusinessField();
             request.setAttribute("listPortfolio", listPortfolio);
             request.setAttribute("listNotice", listNotice);
             request.setAttribute("listVideo", listVideo);
+            request.setAttribute("listBusinessField", listBusinessField);
             request.setAttribute("listPopup", popupDAO.selectActivePopups());
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/main.jsp");
             dispatcher.forward(request, response);

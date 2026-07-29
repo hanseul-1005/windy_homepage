@@ -6,9 +6,9 @@
   <context-param>
     <param-name>upload.base.path</param-name>
     <!-- 개발용 -->
-    <!-- <param-value>C:\Users\Seul1005\windy_uploads</param-value> -->
+    <param-value>C:\Users\Seul1005\windy_uploads</param-value>
     <!-- 실서버 -->
-    <param-value>/web/windy_uploads</param-value>
+    <!-- <param-value>/web/windy_uploads</param-value> -->
   </context-param>
 
   <welcome-file-list>

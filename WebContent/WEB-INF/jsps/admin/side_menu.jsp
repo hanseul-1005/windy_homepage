@@ -16,6 +16,13 @@ String menu = (String) request.getParameter("menu");
       </li>
 
       <li class="nav-item">
+        <a class="nav-link <%if(!"business_field_list".equals(menu) && !"business_field_add".equals(menu) && !"business_field_modify".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=business_field_list">
+          <i class="bi bi-briefcase"></i>
+          <span>Business Field</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
         <a class="nav-link <%if(!"history_list".equals(menu) && !"history_add".equals(menu) && !"history_modify".equals(menu)) { %> collapsed <%} %>" href="admin.windy?menu=history_list">
           <i class="bi bi-clock-history"></i>
           <span>History</span>

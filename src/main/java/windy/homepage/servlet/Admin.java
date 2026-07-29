@@ -20,6 +20,7 @@ import javax.servlet.http.Part;
 import org.json.simple.JSONObject;
 
 import windy.homepage.dao.BoardDAO;
+import windy.homepage.dao.BusinessFieldDAO;
 import windy.homepage.dao.PopupDAO;
 import windy.homepage.dao.CertificationDAO;
 import windy.homepage.dao.ContactDAO;
@@ -31,6 +32,7 @@ import windy.homepage.dao.ProductDAO;
 import windy.homepage.dao.VideoDAO;
 import windy.homepage.model.BoardModel;
 import windy.homepage.model.BoardPostModel;
+import windy.homepage.model.BusinessFieldModel;
 import windy.homepage.model.PopupModel;
 import windy.homepage.model.CertificationModel;
 import windy.homepage.model.ContactModel;
@@ -58,14 +60,15 @@ public class Admin extends HttpServlet {
         String menu = request.getParameter("menu");
         if (menu == null) menu = "main";
 
-        NoticeDAO          noticeDAO     = new NoticeDAO();
-        ContactDAO         contactDAO    = new ContactDAO();
-        HistoryDAO         historyDAO    = new HistoryDAO();
-        CertificationDAO   certDAO       = new CertificationDAO();
-        PortfolioDAO       portfolioDAO  = new PortfolioDAO();
-        ProductDAO         productDAO    = new ProductDAO();
-        PressDAO           pressDAO      = new PressDAO();
-        VideoDAO           videoDAO      = new VideoDAO();
+        NoticeDAO          noticeDAO        = new NoticeDAO();
+        ContactDAO         contactDAO       = new ContactDAO();
+        HistoryDAO         historyDAO       = new HistoryDAO();
+        CertificationDAO   certDAO          = new CertificationDAO();
+        PortfolioDAO       portfolioDAO     = new PortfolioDAO();
+        ProductDAO         productDAO       = new ProductDAO();
+        PressDAO           pressDAO         = new PressDAO();
+        VideoDAO           videoDAO         = new VideoDAO();
+        BusinessFieldDAO   businessFieldDAO = new BusinessFieldDAO();
 
         if ("main".equals(menu)) {
             request.setAttribute("listNotice",    noticeDAO.selectListNotice());
@@ -120,6 +123,21 @@ public class Admin extends HttpServlet {
             ContactModel contact = contactDAO.selectContact(contactId);
             request.setAttribute("contact", contact);
             RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/contact_us/contact_detail.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("business_field_list".equals(menu)) {
+            request.setAttribute("listBusinessField", businessFieldDAO.selectListBusinessField());
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/business_field/business_field_list.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("business_field_add".equals(menu)) {
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/business_field/business_field_add.jsp");
+            dispatcher.forward(request, response);
+
+        } else if ("business_field_modify".equals(menu)) {
+            int businessFieldId = Integer.parseInt(request.getParameter("businessFieldId"));
+            request.setAttribute("businessField", businessFieldDAO.selectBusinessField(businessFieldId));
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/WEB-INF/jsps/admin/business_field/business_field_modify.jsp");
             dispatcher.forward(request, response);
 
         } else if ("history_list".equals(menu)) {
@@ -255,15 +273,16 @@ public class Admin extends HttpServlet {
         }
 
         String mode = request.getParameter("mode");
-        NoticeDAO        noticeDAO    = new NoticeDAO();
-        ContactDAO       contactDAO   = new ContactDAO();
-        HistoryDAO       historyDAO   = new HistoryDAO();
-        CertificationDAO certDAO      = new CertificationDAO();
-        PortfolioDAO     portfolioDAO = new PortfolioDAO();
-        ProductDAO       productDAO   = new ProductDAO();
-        PressDAO         pressDAO     = new PressDAO();
-        VideoDAO         videoDAO     = new VideoDAO();
-        JSONObject       objResult    = new JSONObject();
+        NoticeDAO          noticeDAO        = new NoticeDAO();
+        ContactDAO         contactDAO       = new ContactDAO();
+        HistoryDAO         historyDAO       = new HistoryDAO();
+        CertificationDAO   certDAO          = new CertificationDAO();
+        PortfolioDAO       portfolioDAO     = new PortfolioDAO();
+        ProductDAO         productDAO       = new ProductDAO();
+        PressDAO           pressDAO         = new PressDAO();
+        VideoDAO           videoDAO         = new VideoDAO();
+        BusinessFieldDAO   businessFieldDAO = new BusinessFieldDAO();
+        JSONObject         objResult        = new JSONObject();
 
         if ("notice_add".equals(mode)) {
             String title   = request.getParameter("title");
@@ -297,6 +316,43 @@ public class Admin extends HttpServlet {
         } else if ("contact_delete".equals(mode)) {
             int contactId = Integer.parseInt(request.getParameter("contactId"));
             int result    = contactDAO.deleteContact(contactId);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("business_field_add".equals(mode)) {
+            String icon      = request.getParameter("icon");
+            String title     = request.getParameter("title");
+            String content   = request.getParameter("content");
+            int    sortOrder = Integer.parseInt(request.getParameter("sortOrder"));
+
+            BusinessFieldModel model = new BusinessFieldModel();
+            model.setIcon(icon);
+            model.setTitle(title);
+            model.setContent(content);
+            model.setSortOrder(sortOrder);
+
+            int result = businessFieldDAO.insertBusinessField(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("business_field_update".equals(mode)) {
+            int    businessFieldId = Integer.parseInt(request.getParameter("businessFieldId"));
+            String icon            = request.getParameter("icon");
+            String title           = request.getParameter("title");
+            String content         = request.getParameter("content");
+            int    sortOrder       = Integer.parseInt(request.getParameter("sortOrder"));
+
+            BusinessFieldModel model = new BusinessFieldModel();
+            model.setBusinessFieldId(businessFieldId);
+            model.setIcon(icon);
+            model.setTitle(title);
+            model.setContent(content);
+            model.setSortOrder(sortOrder);
+
+            int result = businessFieldDAO.updateBusinessField(model);
+            objResult.put("result", result > 0 ? "true" : "false");
+
+        } else if ("business_field_delete".equals(mode)) {
+            int businessFieldId = Integer.parseInt(request.getParameter("businessFieldId"));
+            int result          = businessFieldDAO.deleteBusinessField(businessFieldId);
             objResult.put("result", result > 0 ? "true" : "false");
 
         } else if ("history_add".equals(mode)) {
