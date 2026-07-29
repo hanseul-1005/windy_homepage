@@ -207,28 +207,44 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
           <div class="swiper bf-swiper">
             <div class="swiper-wrapper">
 
-            <%-- icon이 "bi-"로 시작하면 Bootstrap 아이콘(<i>), 아니면 업로드 이미지(<img>) --%>
+            <%-- 4개(2열×2행)씩 하나의 슬라이드로 묶어 Swiper Grid 버그 없이 정확한 페이지 이동 --%>
             <%
             if (listBusinessField != null && !listBusinessField.isEmpty()) {
+                int idx = 0;
                 for (BusinessFieldModel bf : listBusinessField) {
+                    if (idx % 4 == 0) { // 4개마다 새 슬라이드 시작
             %>
               <div class="swiper-slide">
-                <div class="service-card d-flex">
-                  <div class="icon flex-shrink-0">
-                    <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
-                      <i class="bi <%=bf.getIcon()%>"></i>
-                    <%} else {%>
-                      <img src="<%=bf.getIcon()%>" style="width:34px; height:34px; object-fit:contain;">
-                    <%}%>
+                <div class="row g-4">
+            <%      } %>
+                  <div class="col-6">
+                    <div class="service-card d-flex">
+                      <div class="icon flex-shrink-0">
+                        <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
+                          <i class="bi <%=bf.getIcon()%>"></i>
+                        <%} else {%>
+                          <img src="<%=bf.getIcon()%>" style="width:40px; height:40px; object-fit:contain;">
+                        <%}%>
+                      </div>
+                      <div>
+                        <h3><%=bf.getTitle()%></h3>
+                        <p><%=bf.getContent()%></p>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <h3><%=bf.getTitle()%></h3>
-                    <p><%=bf.getContent()%></p>
-                  </div>
+            <%
+                    idx++;
+                    if (idx % 4 == 0) { // 4개 채우면 슬라이드 닫기
+            %>
                 </div>
               </div>
-            <%
+            <%      }
                 }
+                if (idx % 4 != 0) { // 마지막 슬라이드가 4의 배수가 아닌 경우 닫기
+            %>
+                </div>
+              </div>
+            <%  }
             }
             %>
 
@@ -514,11 +530,10 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
   <!-- Main JS File -->
   <script src="css_main/assets/js/main.js"></script>
   <script>
-  /* Business Field 2열×3행 Swiper — 화살표는 카드 영역 바깥 */
+  /* Business Field 2열×2행 Swiper — 4개씩 한 슬라이드, 화살표는 카드 영역 바깥 */
   (function() {
     var swiper = new Swiper('.bf-swiper', {
-      slidesPerView: 2,
-      grid: { rows: 2, fill: 'row' },
+      slidesPerView: 1,
       spaceBetween: 16
     });
     var prevBtn = document.querySelector('.bf-arrow-prev');
