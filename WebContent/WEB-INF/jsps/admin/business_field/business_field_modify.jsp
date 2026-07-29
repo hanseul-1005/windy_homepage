@@ -44,15 +44,13 @@ BusinessFieldModel businessField = (BusinessFieldModel) request.getAttribute("bu
               </div>
               <input type="hidden" id="businessFieldId" value="<%=businessField.getBusinessFieldId()%>">
               <div class="row mb-3">
-                <label class="col-sm-2 col-form-label">아이콘 <span class="text-muted" style="font-size:12px;">(Bootstrap Icons 클래스명)</span></label>
-                <div class="col-sm-4">
+                <label class="col-sm-2 col-form-label">아이콘</label>
+                <div class="col-sm-5">
                   <div class="input-group">
                     <span class="input-group-text"><i id="iconPreview" class="bi <%=businessField.getIcon()%>"></i></span>
                     <input type="text" id="icon" class="form-control" value="<%=businessField.getIcon()%>" oninput="previewIcon(this.value)">
+                    <button type="button" class="btn btn-outline-secondary" onclick="openIconPicker()">아이콘 선택</button>
                   </div>
-                  <small class="text-muted">
-                    참고: <a href="https://icons.getbootstrap.com/" target="_blank">Bootstrap Icons 목록</a>
-                  </small>
                 </div>
               </div>
               <div class="row mb-3">
@@ -85,6 +83,7 @@ BusinessFieldModel businessField = (BusinessFieldModel) request.getAttribute("bu
   </footer>
   <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
   <script src="css_admin/assets/js/main.js"></script>
+  <jsp:include page="../icon_picker_modal.jsp"/>
   <script>
   function previewIcon(val) {
     var el = document.getElementById('iconPreview');
