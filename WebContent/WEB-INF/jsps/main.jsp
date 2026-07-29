@@ -213,7 +213,7 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
                 for (BusinessFieldModel bf : listBusinessField) {
             %>
               <div class="swiper-slide">
-                <div class="service-card bf-card d-flex">
+                <div class="service-card d-flex">
                   <div class="icon flex-shrink-0">
                     <%if (bf.getIcon() != null && bf.getIcon().startsWith("bi-")) {%>
                       <i class="bi <%=bf.getIcon()%>"></i>
@@ -251,25 +251,6 @@ List<BusinessFieldModel> listBusinessField = (List<BusinessFieldModel>) request.
       .bf-swiper {
         flex: 1;
         min-width: 0;
-      }
-      /* 카드 사이즈 소폭 축소 */
-      .bf-card {
-        padding: 18px 16px !important;
-        gap: 14px;
-      }
-      .bf-card .icon {
-        width: 52px !important;
-        height: 52px !important;
-        font-size: 1.4rem !important;
-      }
-      .bf-card h3 {
-        font-size: 1rem !important;
-        margin-bottom: 4px !important;
-      }
-      .bf-card p {
-        font-size: 0.82rem !important;
-        margin-bottom: 0 !important;
-        line-height: 1.5 !important;
       }
       /* 화살표 버튼 스타일 */
       .bf-arrow {
